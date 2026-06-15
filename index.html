@@ -1,0 +1,2309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="theme-color" content="#000000">
+  <link rel="manifest" href="manifest.json">
+  <title>LCARS · ADHD COMMAND</title>
+  <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+  /* ================================================================
+     LCARS ADHD COMMAND — Core Stylesheet
+  ================================================================ */
+  :root {
+    --bg:      #000000;
+    --orange:  #FF9900;
+    --peach:   #FF9966;
+    --yellow:  #FFCC00;
+    --pale:    #FFCC99;
+    --blue:    #99CCFF;
+    --blue-dk: #3355AA;
+    --mauve:   #CC99CC;
+    --red:     #CC2200;
+    --green:   #66CC88;
+    --tan:     #FFAA33;
+    --dim:     #553300;
+    --header-h: 68px;
+    --left-w:   108px;
+    --gap:      6px;
+    --elbow-r:  28px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: #000;
+  }
+
+  body {
+    font-family: 'Antonio', 'Helvetica Neue', Arial, sans-serif;
+    color: var(--pale);
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  /* ── LAYOUT ──────────────────────────────────────── */
+  #app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* ── HEADER ──────────────────────────────────────── */
+  #lcars-header {
+    display: flex;
+    height: var(--header-h);
+    flex-shrink: 0;
+  }
+
+  #header-elbow {
+    width: var(--left-w);
+    background: var(--orange);
+    border-top-left-radius: var(--elbow-r);
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 8px 5px 12px;
+  }
+
+  #header-elbow .sys-id {
+    font-size: 9px; font-weight: 700;
+    color: #000; letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  #header-separator { width: var(--gap); flex-shrink: 0; }
+
+  #header-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 6px 0 6px 0;
+  }
+
+  #header-title-row {
+    height: 38px;
+    background: var(--orange);
+    border-radius: 0 14px 14px 0;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    gap: 10px;
+  }
+
+  #header-title-row h1 {
+    font-size: 19px; font-weight: 700;
+    color: #000; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    flex: 1;
+  }
+
+  #clock {
+    font-size: 13px; font-weight: 700;
+    color: #000; letter-spacing: 0.04em;
+  }
+
+  #header-chips {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    padding: 0 4px;
+  }
+
+  .chip {
+    border-radius: 10px;
+    padding: 2px 9px;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .chip-blue   { background: var(--blue-dk); color: var(--blue); }
+  .chip-orange { background: var(--dim);     color: var(--orange); }
+  .chip-green  { background: #1a3322;        color: var(--green); }
+  .chip-red    { background: #330800;        color: #ff6644; }
+
+  /* ── MAIN AREA ───────────────────────────────────── */
+  #main-content {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+  }
+
+  #left-nav {
+    width: var(--left-w);
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 5px 0;
+    gap: 4px;
+  }
+
+  #left-nav::-webkit-scrollbar { display: none; }
+
+  .nav-btn {
+    margin-right: -2px;
+    min-height: 44px;
+    border-radius: 0 22px 22px 0;
+    display: flex;
+    align-items: center;
+    padding: 0 10px 0 10px;
+    background: var(--orange);
+    color: #000;
+    font-family: 'Antonio', sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: none;
+    width: 100%;
+    text-align: left;
+    transition: background 0.15s;
+    gap: 6px;
+  }
+
+  .nav-btn .ni { font-size: 13px; flex-shrink: 0; }
+  .nav-btn:hover { background: var(--yellow); }
+  .nav-btn.active { background: var(--pale); }
+
+  .nav-badge {
+    background: var(--red);
+    color: #fff;
+    border-radius: 50%;
+    width: 16px; height: 16px;
+    font-size: 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  #main-gap { width: var(--gap); flex-shrink: 0; }
+
+  #content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 10px 10px 10px 0;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #content::-webkit-scrollbar { display: none; }
+
+  /* ── FOOTER ──────────────────────────────────────── */
+  #lcars-footer {
+    display: flex;
+    height: 50px;
+    flex-shrink: 0;
+  }
+
+  #footer-elbow {
+    width: var(--left-w);
+    background: var(--peach);
+    border-bottom-left-radius: var(--elbow-r);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #footer-elbow span {
+    font-size: 9px; font-weight: 700;
+    color: #000; letter-spacing: 0.1em;
+  }
+
+  #footer-sep { width: var(--gap); flex-shrink: 0; }
+
+  #footer-bar {
+    flex: 1;
+    background: var(--peach);
+    border-radius: 0 12px 12px 0;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    gap: 10px;
+  }
+
+  #stardate { font-size: 11px; font-weight: 700; color: #000; }
+
+  #footer-dots {
+    margin-left: auto;
+    display: flex;
+    gap: 5px;
+  }
+
+  .fdot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+  }
+
+  /* ── PANELS ──────────────────────────────────────── */
+  .panel { display: none; }
+  .panel.active { display: block; animation: panel-in 0.15s ease; }
+
+  @keyframes panel-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SHARED COMPONENTS ───────────────────────────── */
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .sec-title {
+    font-size: 22px; font-weight: 700;
+    color: var(--orange);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  .sec-sub {
+    font-size: 10px;
+    color: var(--blue);
+    letter-spacing: 0.06em;
+  }
+
+  .card {
+    background: #0d0d0d;
+    border: 1px solid #2a1800;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+
+  .card-head {
+    font-size: 10px; font-weight: 700;
+    color: var(--orange);
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #1a1000;
+  }
+
+  .divider { height: 1px; background: #1a1000; margin: 10px 0; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    gap: 5px;
+    padding: 9px 16px;
+    border-radius: 6px;
+    border: none;
+    font-family: 'Antonio', sans-serif;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.1s, transform 0.08s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .btn:active { opacity: 0.7; transform: scale(0.96); }
+
+  .btn-o   { background: var(--orange); color: #000; }
+  .btn-b   { background: var(--blue); color: #000; }
+  .btn-m   { background: var(--mauve); color: #000; }
+  .btn-r   { background: var(--red); color: #fff; }
+  .btn-g   { background: var(--green); color: #000; }
+  .btn-y   { background: var(--yellow); color: #000; }
+  .btn-ghost{ background: transparent; color: var(--pale); border: 1px solid #333; }
+  .btn-sm  { padding: 6px 12px; font-size: 11px; }
+  .btn-lg  { padding: 12px 20px; font-size: 16px; }
+  .w-full  { width: 100%; }
+
+  .inp {
+    width: 100%;
+    background: #111;
+    border: 1px solid #2a1800;
+    border-radius: 6px;
+    color: var(--pale);
+    font-family: 'Antonio', sans-serif;
+    font-size: 15px;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.2s;
+    user-select: text;
+    -webkit-user-select: text;
+    touch-action: auto;
+  }
+
+  .inp:focus { border-color: var(--orange); }
+  .inp::placeholder { color: #444; }
+
+  select.inp {
+    font-size: 13px;
+    padding: 10px 8px;
+    -webkit-appearance: none;
+  }
+
+  textarea.inp {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .row { display: flex; gap: 8px; align-items: center; }
+  .col { display: flex; flex-direction: column; gap: 6px; }
+  .mt8 { margin-top: 8px; }
+  .mt12 { margin-top: 12px; }
+  .mb8 { margin-bottom: 8px; }
+  .text-dim { color: #555; font-size: 11px; letter-spacing: 0.04em; }
+  .text-orange { color: var(--orange); }
+  .text-blue   { color: var(--blue); }
+  .text-green  { color: var(--green); }
+  .text-red    { color: var(--red); }
+
+  .empty {
+    text-align: center;
+    padding: 30px 16px;
+    color: #444;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+
+  .empty .ei { font-size: 30px; margin-bottom: 6px; }
+
+  /* ── HOME PANEL ──────────────────────────────────── */
+  .mood-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin: 6px 0;
+  }
+
+  .mood-btn {
+    background: #111;
+    border: 1px solid #2a1800;
+    border-radius: 8px;
+    padding: 8px 4px;
+    font-size: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .mood-btn small {
+    font-size: 8px;
+    color: var(--blue);
+    font-family: 'Antonio', sans-serif;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .mood-btn.sel { border-color: var(--orange); background: #1f0d00; }
+
+  .energy-row {
+    display: flex;
+    gap: 5px;
+    margin: 6px 0;
+  }
+
+  .eseg {
+    flex: 1;
+    height: 22px;
+    border-radius: 4px;
+    background: #1a1a1a;
+    cursor: pointer;
+    transition: background 0.2s;
+    border: none;
+  }
+
+  .eseg.on-1 { background: var(--red); }
+  .eseg.on-2 { background: #CC5500; }
+  .eseg.on-3 { background: var(--yellow); }
+  .eseg.on-4 { background: var(--green); }
+  .eseg.on-5 { background: var(--blue); }
+
+  .qstat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 0;
+    border-bottom: 1px solid #111;
+    font-size: 13px;
+  }
+
+  .qstat:last-child { border-bottom: none; }
+  .qs-label { color: var(--blue); letter-spacing: 0.04em; font-size: 12px; }
+  .qs-val   { color: var(--pale); font-weight: 700; }
+
+  /* ── TASKS PANEL ─────────────────────────────────── */
+  .task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 12px;
+    background: #0d0d0d;
+    border-left: 3px solid var(--orange);
+    border-radius: 0 7px 7px 0;
+    margin-bottom: 5px;
+    transition: opacity 0.3s;
+  }
+
+  .task-item.p-urgent { border-color: var(--red); }
+  .task-item.p-high   { border-color: var(--peach); }
+  .task-item.p-medium { border-color: var(--yellow); }
+  .task-item.p-low    { border-color: var(--blue); }
+
+  .task-item.done { opacity: 0.38; }
+  .task-item.done .ttext { text-decoration: line-through; }
+
+  .tchk {
+    width: 22px; height: 22px;
+    border: 2px solid #333;
+    border-radius: 4px;
+    flex-shrink: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    transition: background 0.2s, border-color 0.2s;
+    margin-top: 1px;
+    background: transparent;
+    color: transparent;
+  }
+
+  .task-item.done .tchk {
+    background: var(--green);
+    border-color: var(--green);
+    color: #000;
+  }
+
+  .tcontent { flex: 1; min-width: 0; }
+  .ttext { font-size: 15px; color: var(--pale); line-height: 1.3; }
+  .tmeta { font-size: 10px; color: #444; margin-top: 2px; }
+
+  .tdel {
+    background: none; border: none;
+    color: #2a2a2a; font-size: 16px;
+    cursor: pointer; padding: 0 3px;
+    line-height: 1; flex-shrink: 0;
+  }
+
+  .tdel:hover { color: var(--red); }
+
+  .group-label {
+    font-size: 10px;
+    color: var(--blue);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 6px 0 2px 2px;
+    margin-top: 4px;
+  }
+
+  /* ── TIMER PANEL ─────────────────────────────────── */
+  .timer-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 0 16px;
+  }
+
+  .timer-ring {
+    position: relative;
+    width: 200px; height: 200px;
+    margin-bottom: 14px;
+  }
+
+  .timer-ring svg { transform: rotate(-90deg); }
+
+  #ring-bg   { fill: none; stroke: #1a1000; stroke-width: 14; }
+  #ring-fill { fill: none; stroke: var(--orange); stroke-width: 14; stroke-linecap: round;
+               transition: stroke-dashoffset 0.8s linear, stroke 0.4s; }
+
+  .timer-overlay {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  #timer-digits {
+    font-size: 46px; font-weight: 700;
+    color: var(--orange);
+    letter-spacing: -0.02em;
+    display: block;
+    line-height: 1;
+  }
+
+  #timer-mode-label {
+    font-size: 11px;
+    color: var(--blue);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .preset-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+
+  .preset-btn {
+    padding: 6px 12px;
+    border-radius: 14px;
+    border: 1px solid #333;
+    background: transparent;
+    color: var(--pale);
+    font-family: 'Antonio', sans-serif;
+    font-size: 12px; font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    letter-spacing: 0.04em;
+  }
+
+  .preset-btn.active { background: var(--orange); border-color: var(--orange); color: #000; }
+
+  .ctrl-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+
+  .session-log { margin-top: 8px; }
+
+  .session-entry {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid #111;
+    font-size: 12px;
+    color: #666;
+  }
+
+  .session-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    flex-shrink: 0;
+  }
+
+  .session-dot.break { background: var(--blue); }
+
+  /* ── ROUTINES PANEL ──────────────────────────────── */
+  .rtab-row {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+
+  .rtab {
+    flex: 1;
+    padding: 8px 4px;
+    border-radius: 6px;
+    border: 1px solid #333;
+    background: transparent;
+    color: var(--pale);
+    font-family: 'Antonio', sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.15s;
+  }
+
+  .rtab.active { background: var(--orange); border-color: var(--orange); color: #000; }
+
+  .prog-bar-wrap {
+    margin-bottom: 12px;
+  }
+
+  .prog-bar {
+    height: 8px;
+    background: #1a1a1a;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .prog-fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 4px;
+    transition: width 0.4s ease;
+  }
+
+  .prog-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--blue);
+    margin-top: 3px;
+    letter-spacing: 0.04em;
+  }
+
+  .rstep {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: #0d0d0d;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+
+  .rstep.current { background: #140a00; border-color: var(--orange); }
+  .rstep.done    { opacity: 0.42; }
+
+  .rstep-circle {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+    transition: background 0.2s;
+    background: transparent;
+    color: transparent;
+  }
+
+  .rstep.done .rstep-circle {
+    background: var(--green);
+    border-color: var(--green);
+    color: #000;
+  }
+
+  .rstep-text { flex: 1; font-size: 15px; color: var(--pale); }
+  .current-tag { font-size: 9px; color: var(--orange); letter-spacing: 0.07em; }
+
+  /* ── SENSORY PANEL ───────────────────────────────── */
+  .overwhelm-wrap { margin-bottom: 14px; }
+
+  .overwhelm-outer {
+    height: 26px;
+    background: #1a1a1a;
+    border-radius: 13px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .overwhelm-fill {
+    height: 100%;
+    border-radius: 13px;
+    transition: width 0.4s, background 0.4s;
+  }
+
+  .overwhelm-fill.low    { background: var(--green); }
+  .overwhelm-fill.medium { background: var(--yellow); }
+  .overwhelm-fill.high   { background: var(--red); }
+
+  .overwhelm-text {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 10px; font-weight: 700;
+    color: #000;
+    letter-spacing: 0.07em;
+    pointer-events: none;
+  }
+
+  .sensory-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+    margin-bottom: 10px;
+  }
+
+  .sense-item {
+    background: #0d0d0d;
+    border-radius: 8px;
+    padding: 10px;
+  }
+
+  .sense-name {
+    font-size: 10px; font-weight: 700;
+    color: var(--blue);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .sense-name .sn-icon { font-size: 13px; }
+
+  input[type="range"].sense-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: #2a2a2a;
+    outline: none;
+    cursor: pointer;
+  }
+
+  input[type="range"].sense-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--orange);
+    cursor: pointer;
+  }
+
+  .sense-val {
+    font-size: 20px; font-weight: 700;
+    color: var(--orange);
+    margin-top: 4px;
+    text-align: right;
+  }
+
+  .log-entry {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 1px solid #111;
+    font-size: 12px;
+    color: #666;
+  }
+
+  .log-entry:last-child { border-bottom: none; }
+
+  .log-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  /* ── REGULATE PANEL ──────────────────────────────── */
+  .cat-pills {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  .cat-pill {
+    padding: 5px 12px;
+    border-radius: 12px;
+    border: 1px solid #333;
+    background: transparent;
+    color: var(--pale);
+    font-family: 'Antonio', sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .cat-pill.active { background: var(--mauve); border-color: var(--mauve); color: #000; }
+
+  .strat-card {
+    background: #0d0d0d;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 8px;
+    border-left: 3px solid var(--mauve);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .strat-card:active { background: #120a18; }
+  .strat-title { font-size: 16px; font-weight: 700; color: var(--pale); margin-bottom: 3px; }
+  .strat-desc  { font-size: 12px; color: #666; line-height: 1.4; }
+
+  .strat-body {
+    display: none;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #1a1a1a;
+    font-size: 13px;
+    color: var(--pale);
+    line-height: 1.65;
+  }
+
+  .strat-card.open .strat-body { display: block; }
+
+  .strat-tags { margin-top: 6px; }
+  .stag {
+    display: inline-block;
+    font-size: 9px;
+    padding: 2px 7px;
+    border-radius: 8px;
+    background: #1a1a2a;
+    color: var(--blue);
+    margin-right: 4px;
+    letter-spacing: 0.04em;
+  }
+
+  /* breathing widget */
+  .breath-widget {
+    text-align: center;
+    padding: 20px 0 10px;
+    display: none;
+  }
+
+  .breath-widget.visible { display: block; }
+
+  .breath-circle {
+    width: 110px; height: 110px;
+    border-radius: 50%;
+    background: var(--blue);
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px; font-weight: 700;
+    color: #000;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: transform 0.5s ease;
+  }
+
+  @keyframes b-in  { from { transform: scale(0.55); } to { transform: scale(1.35); } }
+  @keyframes b-out { from { transform: scale(1.35); } to { transform: scale(0.55); } }
+
+  .b-in   { animation: b-in  4s ease-in-out forwards; }
+  .b-hold { transform: scale(1.35); background: var(--green) !important; }
+  .b-out  { animation: b-out 6s ease-in-out forwards; }
+
+  /* ── NOTES PANEL ─────────────────────────────────── */
+  .note-item {
+    background: #0d0d0d;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 6px;
+    border-top: 2px solid var(--yellow);
+  }
+
+  .note-text {
+    font-size: 14px;
+    color: var(--pale);
+    line-height: 1.55;
+    word-break: break-word;
+    user-select: text;
+    -webkit-user-select: text;
+  }
+
+  .note-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px;
+  }
+
+  .note-time { font-size: 9px; color: #444; letter-spacing: 0.04em; }
+
+  .note-del {
+    background: none; border: none;
+    color: #2a2a2a; font-size: 14px;
+    cursor: pointer;
+  }
+
+  .note-del:hover { color: var(--red); }
+
+  /* ── ALERT OVERLAY ───────────────────────────────── */
+  #overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.88);
+    display: none;
+    align-items: center; justify-content: center;
+    z-index: 200;
+    padding: 24px;
+  }
+
+  #overlay.on { display: flex; }
+
+  .ov-box {
+    background: #0d0d0d;
+    border: 2px solid var(--orange);
+    border-radius: 14px;
+    padding: 26px 20px;
+    max-width: 310px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .ov-icon  { font-size: 42px; margin-bottom: 10px; }
+  .ov-title { font-size: 20px; font-weight: 700; color: var(--orange); letter-spacing: 0.06em; margin-bottom: 8px; }
+  .ov-msg   { font-size: 13px; color: var(--pale); line-height: 1.55; margin-bottom: 18px; }
+
+  /* ── MOBILE ──────────────────────────────────────── */
+  @media (max-width: 420px) {
+    :root { --left-w: 88px; --header-h: 58px; }
+    .nav-btn { font-size: 9.5px; min-height: 40px; padding: 0 7px; }
+    .sec-title { font-size: 18px; }
+    .timer-ring { width: 170px; height: 170px; }
+    #timer-digits { font-size: 38px; }
+    #header-title-row h1 { font-size: 15px; }
+    #clock { font-size: 11px; }
+  }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ── HEADER ── -->
+  <header id="lcars-header">
+    <div id="header-elbow">
+      <span class="sys-id">LCARS<br>SYS</span>
+    </div>
+    <div id="header-separator"></div>
+    <div id="header-right">
+      <div id="header-title-row">
+        <h1 id="page-title">ADHD COMMAND</h1>
+        <span id="clock">00:00</span>
+      </div>
+      <div id="header-chips">
+        <span class="chip chip-blue" id="status-chip">NOMINAL</span>
+        <span class="chip chip-orange" id="energy-chip">ENERGY —</span>
+        <span class="chip chip-green" id="task-chip">0 TASKS</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── MAIN AREA ── -->
+  <div id="main-content">
+
+    <!-- Left nav -->
+    <nav id="left-nav">
+      <button class="nav-btn active" onclick="goPanel('home')" data-p="home">
+        <span class="ni">⌂</span> HOME
+      </button>
+      <button class="nav-btn" onclick="goPanel('tasks')" data-p="tasks">
+        <span class="ni">✓</span> TASKS
+        <span class="nav-badge" id="task-badge" style="display:none">0</span>
+      </button>
+      <button class="nav-btn" onclick="goPanel('timer')" data-p="timer">
+        <span class="ni">◷</span> TIMER
+      </button>
+      <button class="nav-btn" onclick="goPanel('routine')" data-p="routine">
+        <span class="ni">☰</span> ROUTINE
+      </button>
+      <button class="nav-btn" onclick="goPanel('sensory')" data-p="sensory">
+        <span class="ni">◎</span> SENSORY
+      </button>
+      <button class="nav-btn" onclick="goPanel('regulate')" data-p="regulate">
+        <span class="ni">♥</span> REGULATE
+      </button>
+      <button class="nav-btn" onclick="goPanel('notes')" data-p="notes">
+        <span class="ni">✎</span> NOTES
+      </button>
+    </nav>
+
+    <div id="main-gap"></div>
+
+    <!-- Content area -->
+    <div id="content">
+
+      <!-- ═══════════════ HOME ═══════════════ -->
+      <div id="panel-home" class="panel active">
+        <div class="sec-head">
+          <span class="sec-title">COMMAND CENTER</span>
+          <span class="sec-sub">STATUS OVERVIEW</span>
+        </div>
+
+        <div class="card">
+          <div class="card-head">CURRENT MOOD</div>
+          <div class="mood-grid" id="mood-grid">
+            <button class="mood-btn" data-mood="great" onclick="setMood('great')">😄<small>Great</small></button>
+            <button class="mood-btn" data-mood="good"  onclick="setMood('good')">🙂<small>Good</small></button>
+            <button class="mood-btn" data-mood="meh"   onclick="setMood('meh')">😐<small>Meh</small></button>
+            <button class="mood-btn" data-mood="low"   onclick="setMood('low')">😔<small>Low</small></button>
+            <button class="mood-btn" data-mood="anxious"  onclick="setMood('anxious')">😰<small>Anxious</small></button>
+            <button class="mood-btn" data-mood="angry"    onclick="setMood('angry')">😤<small>Angry</small></button>
+            <button class="mood-btn" data-mood="overwhelmed" onclick="setMood('overwhelmed')">🤯<small>Ovrlmd</small></button>
+            <button class="mood-btn" data-mood="focused"  onclick="setMood('focused')">🎯<small>Focused</small></button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">ENERGY LEVEL</div>
+          <div class="energy-row" id="energy-row">
+            <button class="eseg" data-e="1" onclick="setEnergy(1)" title="1 - Crashed"></button>
+            <button class="eseg" data-e="2" onclick="setEnergy(2)" title="2 - Low"></button>
+            <button class="eseg" data-e="3" onclick="setEnergy(3)" title="3 - Moderate"></button>
+            <button class="eseg" data-e="4" onclick="setEnergy(4)" title="4 - Good"></button>
+            <button class="eseg" data-e="5" onclick="setEnergy(5)" title="5 - High"></button>
+          </div>
+          <div class="text-dim" id="energy-label" style="text-align:center; margin-top:4px;">TAP TO SET ENERGY</div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">TODAY AT A GLANCE</div>
+          <div id="home-stats">
+            <div class="qstat"><span class="qs-label">PENDING TASKS</span><span class="qs-val" id="hs-tasks">—</span></div>
+            <div class="qstat"><span class="qs-label">FOCUS SESSIONS</span><span class="qs-val" id="hs-sessions">—</span></div>
+            <div class="qstat"><span class="qs-label">ROUTINE PROGRESS</span><span class="qs-val" id="hs-routine">—</span></div>
+            <div class="qstat"><span class="qs-label">SENSORY STATUS</span><span class="qs-val" id="hs-sensory">—</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">QUICK CAPTURE</div>
+          <div class="row" style="gap:6px">
+            <input id="quick-task" class="inp" type="text" placeholder="Add a task..." style="flex:1">
+            <button class="btn btn-o btn-sm" onclick="quickAddTask()">ADD</button>
+          </div>
+        </div>
+
+        <div class="card" id="overwhelm-card" style="display:none">
+          <div class="card-head text-red">⚠ HIGH SENSORY LOAD DETECTED</div>
+          <div class="text-dim">Your sensory sensors are elevated. Consider activating regulation protocols.</div>
+          <button class="btn btn-m w-full mt8" onclick="goPanel('regulate')">OPEN REGULATE →</button>
+        </div>
+      </div>
+
+      <!-- ═══════════════ TASKS ═══════════════ -->
+      <div id="panel-tasks" class="panel">
+        <div class="sec-head">
+          <span class="sec-title">MISSION LOG</span>
+          <span class="sec-sub">TASK MANAGEMENT</span>
+        </div>
+
+        <div class="card">
+          <div class="col" style="gap:8px">
+            <input id="task-input" class="inp" type="text" placeholder="New task..." onkeydown="if(event.key==='Enter') addTask()">
+            <div class="row">
+              <select id="task-priority" class="inp" style="flex:1">
+                <option value="urgent">🔴 URGENT</option>
+                <option value="high">🟠 HIGH</option>
+                <option value="medium" selected>🟡 MEDIUM</option>
+                <option value="low">🔵 LOW</option>
+              </select>
+              <select id="task-cat" class="inp" style="flex:1">
+                <option value="general">GENERAL</option>
+                <option value="work">WORK</option>
+                <option value="home">HOME</option>
+                <option value="self-care">SELF-CARE</option>
+                <option value="health">HEALTH</option>
+              </select>
+              <button class="btn btn-o" onclick="addTask()">ADD</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb8" style="gap:6px">
+          <button class="btn btn-ghost btn-sm" onclick="clearDoneTasks()">CLEAR DONE</button>
+          <button class="btn btn-ghost btn-sm" onclick="filterTasks('all')" id="tf-all">ALL</button>
+          <button class="btn btn-ghost btn-sm" onclick="filterTasks('pending')" id="tf-pending">PENDING</button>
+        </div>
+
+        <div id="task-list"></div>
+      </div>
+
+      <!-- ═══════════════ TIMER ═══════════════ -->
+      <div id="panel-timer" class="panel">
+        <div class="sec-head">
+          <span class="sec-title">TEMPORAL REG.</span>
+          <span class="sec-sub">FOCUS TIMER</span>
+        </div>
+
+        <div class="timer-wrap">
+          <div class="timer-ring">
+            <svg width="200" height="200" viewBox="0 0 200 200">
+              <circle id="ring-bg"   cx="100" cy="100" r="88"/>
+              <circle id="ring-fill" cx="100" cy="100" r="88"
+                stroke-dasharray="552.9" stroke-dashoffset="0"/>
+            </svg>
+            <div class="timer-overlay">
+              <span id="timer-digits">25:00</span>
+              <div id="timer-mode-label">FOCUS</div>
+            </div>
+          </div>
+
+          <div class="preset-row">
+            <button class="preset-btn" onclick="setTimerPreset(5,'break')">5m Break</button>
+            <button class="preset-btn" onclick="setTimerPreset(10,'break')">10m Break</button>
+            <button class="preset-btn active" onclick="setTimerPreset(25,'focus')">25m Focus</button>
+            <button class="preset-btn" onclick="setTimerPreset(50,'focus')">50m Focus</button>
+          </div>
+
+          <div class="row mb8">
+            <input id="custom-mins" class="inp" type="number" min="1" max="180" placeholder="Custom min" style="width:130px; text-align:center">
+            <button class="btn btn-ghost btn-sm" onclick="setCustomTimer()">SET</button>
+          </div>
+
+          <div class="ctrl-row">
+            <button class="btn btn-g btn-lg" id="start-btn" onclick="timerStartPause()">▶ START</button>
+            <button class="btn btn-ghost btn-lg" onclick="timerReset()">↺ RESET</button>
+          </div>
+
+          <div id="timer-session-count" class="text-dim" style="margin-top:8px; text-align:center">
+            SESSION 0 OF DAY
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">SESSION LOG</div>
+          <div id="session-log"><div class="empty"><div class="ei">◷</div>NO SESSIONS TODAY</div></div>
+        </div>
+      </div>
+
+      <!-- ═══════════════ ROUTINE ═══════════════ -->
+      <div id="panel-routine" class="panel">
+        <div class="sec-head">
+          <span class="sec-title">DAILY PROTOCOL</span>
+          <span class="sec-sub">ROUTINES</span>
+        </div>
+
+        <div class="rtab-row">
+          <button class="rtab active" onclick="selectRoutine('morning')" id="rtab-morning">☀ MORNING</button>
+          <button class="rtab" onclick="selectRoutine('evening')" id="rtab-evening">🌙 EVENING</button>
+          <button class="rtab" onclick="selectRoutine('custom')" id="rtab-custom">★ CUSTOM</button>
+        </div>
+
+        <div class="prog-bar-wrap">
+          <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+          <div class="prog-label">
+            <span id="prog-label-left">0 COMPLETE</span>
+            <span id="prog-label-right">0%</span>
+          </div>
+        </div>
+
+        <div id="routine-steps"></div>
+
+        <div class="row mt8" style="gap:6px">
+          <button class="btn btn-ghost btn-sm" onclick="resetRoutine()" style="flex:1">↺ RESET</button>
+          <button class="btn btn-o btn-sm" onclick="completeAllRoutine()" style="flex:1">✓ ALL DONE</button>
+        </div>
+
+        <!-- Custom routine editor -->
+        <div id="custom-editor" style="display:none; margin-top:12px">
+          <div class="card-head" style="color:var(--blue); font-size:10px; letter-spacing:0.07em; text-transform:uppercase; margin-bottom:8px">ADD STEP</div>
+          <div class="row">
+            <input id="custom-step-input" class="inp" type="text" placeholder="Step description..." style="flex:1">
+            <button class="btn btn-o btn-sm" onclick="addCustomStep()">ADD</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════ SENSORY ═══════════════ -->
+      <div id="panel-sensory" class="panel">
+        <div class="sec-head">
+          <span class="sec-title">SENSORY ARRAY</span>
+          <span class="sec-sub">SENSOR STATUS</span>
+        </div>
+
+        <div class="card">
+          <div class="card-head">OVERWHELM METER</div>
+          <div class="overwhelm-wrap">
+            <div class="overwhelm-outer">
+              <div class="overwhelm-fill low" id="overwhelm-fill" style="width:0%"></div>
+              <div class="overwhelm-text" id="overwhelm-text">CALIBRATING</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">SENSOR CALIBRATION</div>
+          <div class="sensory-grid" id="sensory-grid">
+            <!-- filled by JS -->
+          </div>
+          <button class="btn btn-o w-full mt8" onclick="logSensory()">LOG CURRENT STATE</button>
+        </div>
+
+        <div class="card">
+          <div class="card-head">RECENT LOGS</div>
+          <div id="sensory-log-list"><div class="empty"><div class="ei">◎</div>NO LOGS YET</div></div>
+        </div>
+      </div>
+
+      <!-- ═══════════════ REGULATE ═══════════════ -->
+      <div id="panel-regulate" class="panel">
+        <div class="sec-head">
+          <span class="sec-title">EMERGENCY PROTOCOLS</span>
+          <span class="sec-sub">REGULATION TOOLS</span>
+        </div>
+
+        <div class="cat-pills">
+          <button class="cat-pill active" onclick="filterStrats('all')">ALL</button>
+          <button class="cat-pill" onclick="filterStrats('breathe')">BREATHE</button>
+          <button class="cat-pill" onclick="filterStrats('ground')">GROUND</button>
+          <button class="cat-pill" onclick="filterStrats('move')">MOVE</button>
+          <button class="cat-pill" onclick="filterStrats('sensory')">SENSORY</button>
+          <button class="cat-pill" onclick="filterStrats('think')">COGNITIVE</button>
+        </div>
+
+        <!-- Breathing widget -->
+        <div class="card" id="breath-card" style="display:none">
+          <div class="card-head">BREATHING EXERCISE</div>
+          <div class="breath-widget visible" id="breath-widget">
+            <div class="breath-circle" id="breath-circle">READY</div>
+            <div id="breath-label" class="text-dim">TAP TO START</div>
+            <div class="row mt8" style="justify-content:center; gap:8px">
+              <button class="btn btn-b btn-sm" onclick="startBreathing('box')">BOX (4-4-4-4)</button>
+              <button class="btn btn-b btn-sm" onclick="startBreathing('478')">4-7-8</button>
+              <button class="btn btn-ghost btn-sm" onclick="stopBreathing()">STOP</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="strat-list"></div>
+      </div>
+
+      <!-- ═══════════════ NOTES ═══════════════ -->
+      <div id="panel-notes" class="panel">
+        <div class="sec-head">
+          <span class="sec-title">NEURAL BUFFER</span>
+          <span class="sec-sub">BRAIN DUMP</span>
+        </div>
+
+        <div class="card">
+          <textarea id="note-input" class="inp" placeholder="Dump thoughts here... tap add when done" rows="4"></textarea>
+          <div class="row mt8">
+            <button class="btn btn-o" onclick="addNote()" style="flex:1">CAPTURE THOUGHT</button>
+            <button class="btn btn-ghost btn-sm" onclick="clearAllNotes()" title="Clear all notes">🗑</button>
+          </div>
+        </div>
+
+        <div class="row mb8">
+          <input id="note-search" class="inp" type="text" placeholder="Search notes..." oninput="renderNotes()" style="flex:1">
+        </div>
+
+        <div id="note-list"></div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main-content -->
+
+  <!-- ── FOOTER ── -->
+  <footer id="lcars-footer">
+    <div id="footer-elbow"><span>SYS</span></div>
+    <div id="footer-sep"></div>
+    <div id="footer-bar">
+      <span id="stardate">STARDATE 2026.165</span>
+      <div id="footer-dots">
+        <div class="fdot" style="background:var(--orange)"></div>
+        <div class="fdot" style="background:var(--blue)"></div>
+        <div class="fdot" style="background:var(--mauve)"></div>
+      </div>
+    </div>
+  </footer>
+
+</div><!-- /app -->
+
+<!-- ── ALERT OVERLAY ── -->
+<div id="overlay">
+  <div class="ov-box">
+    <div class="ov-icon" id="ov-icon"></div>
+    <div class="ov-title" id="ov-title"></div>
+    <div class="ov-msg" id="ov-msg"></div>
+    <button class="btn btn-o w-full" onclick="hideAlert()">ACKNOWLEDGE</button>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   LCARS ADHD COMMAND — Application Logic
+================================================================ */
+
+// ── STATE ─────────────────────────────────────────────────────────
+
+const DEFAULTS = {
+  tasks: [],
+  sensoryLogs: [],
+  notes: [],
+  timerSessions: [],
+  customSteps: [],
+  routineState: {
+    morning: [],
+    evening: [],
+    custom: [],
+    lastReset: null,
+  },
+  today: {
+    date: null,
+    mood: null,
+    energy: 0,
+    sensory: { visual: 3, auditory: 3, tactile: 3, smell: 2, vestibular: 2, intero: 3 },
+  },
+  timerTotal: 1500,  // 25 min in seconds
+  timerType: 'focus',
+};
+
+let S = loadState();
+let currentPanel = 'home';
+let taskFilter = 'all';
+let stratFilter = 'all';
+let currentRoutine = 'morning';
+
+// Timer state
+let timerInterval = null;
+let timerRunning = false;
+let timerRemaining = S.timerTotal || 1500;
+
+// Sensory state (live sliders, not stored until logged)
+const SENSES = [
+  { key: 'visual',     label: 'VISUAL',     icon: '👁', desc: 'Light, screens, movement' },
+  { key: 'auditory',   label: 'AUDITORY',   icon: '👂', desc: 'Noise, voices, background sounds' },
+  { key: 'tactile',    label: 'TACTILE',    icon: '✋', desc: 'Touch, clothing, textures' },
+  { key: 'smell',      label: 'OLFACTORY',  icon: '👃', desc: 'Scents, perfumes, food' },
+  { key: 'vestibular', label: 'VESTIBULAR', icon: '🌀', desc: 'Balance, movement, position' },
+  { key: 'intero',     label: 'INTEROCEPTION', icon: '💓', desc: 'Hunger, thirst, heartbeat' },
+];
+
+let liveSensory = { ...S.today.sensory };
+
+// Default routines
+const DEFAULT_MORNING = [
+  'Wake up & get out of bed',
+  'Drink a full glass of water',
+  'Bathroom / freshen up',
+  'Get dressed',
+  'Eat breakfast',
+  'Take medications (if needed)',
+  'Check today\'s tasks',
+  '5-minute stretch or movement',
+  'Set your intention for today',
+];
+
+const DEFAULT_EVENING = [
+  'Wind down — reduce screens',
+  'Prepare for tomorrow (clothes, bag)',
+  'Personal hygiene routine',
+  'Dim the lights',
+  'Drink calming tea or water',
+  'Relaxation time (read, music)',
+  'Log today\'s wins',
+  'Set tomorrow\'s top 3 priorities',
+  'Sleep preparation',
+];
+
+// Regulation strategies
+const STRATEGIES = [
+  {
+    id: 'box-breath', cat: 'breathe',
+    title: 'Box Breathing',
+    desc: 'Slow, rhythmic breathing to calm your nervous system',
+    body: 'Inhale for 4 counts → Hold for 4 counts → Exhale for 4 counts → Hold for 4 counts. Repeat 4–8 times.\n\nUse the BREATHING EXERCISE widget above to guide you.',
+    action: () => { showBreathCard(); startBreathing('box'); },
+    tags: ['anxiety', 'regulation', 'quick'],
+  },
+  {
+    id: '478', cat: 'breathe',
+    title: '4-7-8 Breathing',
+    desc: 'Powerful for fast anxiety reduction',
+    body: 'Inhale for 4 counts → Hold for 7 counts → Exhale for 8 counts. Repeat 3–4 cycles.\n\nStart slow — this is intense. Do NOT drive.',
+    action: () => { showBreathCard(); startBreathing('478'); },
+    tags: ['anxiety', 'sleep', 'fast-relief'],
+  },
+  {
+    id: 'belly', cat: 'breathe',
+    title: 'Belly Breathing',
+    desc: 'Deep breaths that expand the belly, not the chest',
+    body: 'Place one hand on chest, one on belly. Breathe so only the belly hand moves.\n\nCount each exhale. Aim for 6-8 breaths per minute.',
+    tags: ['calm', 'beginner', 'anywhere'],
+  },
+  {
+    id: '54321', cat: 'ground',
+    title: '5-4-3-2-1 Grounding',
+    desc: 'Reconnect to the present through your senses',
+    body: '5 things you can SEE\n4 things you can TOUCH\n3 things you can HEAR\n2 things you can SMELL\n1 thing you can TASTE\n\nSay them aloud or in your head. Take your time.',
+    tags: ['grounding', 'anxiety', 'dissociation'],
+  },
+  {
+    id: 'cold-water', cat: 'ground',
+    title: 'Cold Water Reset',
+    desc: 'Splash cold water on your face or hold ice cubes',
+    body: 'Cold water activates the dive reflex, slowing your heart rate within seconds.\n\nOptions: splash face, cold water on wrists, hold ice cubes in hands for 30 seconds.',
+    tags: ['fast-relief', 'panic', 'intense'],
+  },
+  {
+    id: 'feet-floor', cat: 'ground',
+    title: 'Feet on the Floor',
+    desc: 'Feel the weight of your body connecting to the ground',
+    body: 'Press your feet firmly into the floor. Feel the pressure.\n\nNotice: the temperature, the texture, the weight of your body, the earth below you.\n\nBreathing slowly, scan up from your feet.',
+    tags: ['grounding', 'gentle', 'anywhere'],
+  },
+  {
+    id: 'shake', cat: 'move',
+    title: 'Shake It Out',
+    desc: 'Literally shake your body to discharge stress hormones',
+    body: 'Start with your hands → arms → shoulders → whole body.\n\nShake for 1-2 minutes. Animals do this naturally after stress — it works.\n\nEnd by standing still and noticing how you feel.',
+    tags: ['movement', 'stress', 'discharge'],
+  },
+  {
+    id: 'walk', cat: 'move',
+    title: 'Movement Break',
+    desc: 'A short walk or march on the spot',
+    body: 'Even 5 minutes of walking helps ADHD brains reset.\n\nOptions: walk outside, march on spot, pace your room, do jumping jacks or wall push-ups.\n\nCount your steps to keep your mind anchored.',
+    tags: ['ADHD', 'movement', 'energy'],
+  },
+  {
+    id: 'press', cat: 'move',
+    title: 'Wall Push-ups / Proprioception',
+    desc: 'Push against a wall or do chair push-ups for body input',
+    body: 'Heavy work gives the proprioceptive system the input it craves.\n\nDo 10-15 wall push-ups, or press hands together firmly for 10 seconds.\n\nSit on chair, grip the seat, and push down for 10 seconds.',
+    tags: ['sensory', 'proprioception', 'calm'],
+  },
+  {
+    id: 'stim', cat: 'sensory',
+    title: 'Healthy Stim Break',
+    desc: 'Schedule intentional stimming to regulate',
+    body: 'Stimming is regulation, not a problem. Give yourself permission.\n\nIdeas: rocking, humming, fidget toy, pacing, hand-flapping, chewing gum, squeezing a stress ball, spinning in a chair.\n\nSet a 5-minute timer and stim intentionally.',
+    tags: ['autism', 'stim', 'regulation'],
+  },
+  {
+    id: 'reduce-stim', cat: 'sensory',
+    title: 'Reduce Sensory Input',
+    desc: 'Lower the sensory load immediately',
+    body: 'Find a quieter/darker space if possible.\n\nOptions: sunglasses indoors, noise-cancelling headphones, move to quieter room, dim lights, put on comfortable clothing, remove scratchy labels.\n\nTell others: "I need a few minutes of quiet."',
+    tags: ['autism', 'overwhelm', 'sensory'],
+  },
+  {
+    id: 'weighted', cat: 'sensory',
+    title: 'Deep Pressure / Weighted',
+    desc: 'Use a weighted blanket, tight hug, or compression',
+    body: 'Deep pressure input calms the nervous system.\n\nOptions: weighted blanket, bear hug (self or from safe person), compression shirt/vest, sit with heavy pillow on lap, wrap tight in a blanket burrito.',
+    tags: ['autism', 'sensory', 'calm'],
+  },
+  {
+    id: 'name-it', cat: 'think',
+    title: 'Name It to Tame It',
+    desc: 'Label what you\'re feeling to reduce its intensity',
+    body: 'Say or write: "I am feeling [emotion] because [thing]."\n\nExample: "I am feeling overwhelmed because there are too many demands at once."\n\nNaming emotions activates the prefrontal cortex and reduces amygdala activation.',
+    tags: ['emotional-regulation', 'quick', 'anywhere'],
+  },
+  {
+    id: 'halt', cat: 'think',
+    title: 'HALT Check',
+    desc: 'Quick check for basic needs affecting your state',
+    body: 'Am I...\nH – HUNGRY?\nA – ANGRY (at something specific)?\nL – LONELY or needing connection?\nT – TIRED or sleep-deprived?\n\nAddress the basic need first. Many meltdowns are triggered by unmet basic needs.',
+    tags: ['ADHD', 'autism', 'basics'],
+  },
+  {
+    id: 'exit', cat: 'think',
+    title: 'Exit Strategy',
+    desc: 'Know your escape route before you need it',
+    body: 'Pre-plan phrases you can say:\n• "I need a moment."\n• "Excuse me, I\'ll be right back."\n• "I need some water."\n\nIdentify the nearest quiet/exit area. Give yourself permission to use it.\n\nLeaving to regulate is NOT weakness — it\'s skill.',
+    tags: ['social', 'autism', 'overwhelm'],
+  },
+  {
+    id: 'body-double', cat: 'think',
+    title: 'Body Doubling',
+    desc: 'Work alongside another person (in-person or virtual)',
+    body: 'The presence of another person can help ADHD brains activate and focus.\n\nOptions: work in a café, video call a friend to "co-work," join a virtual body-doubling session online, put on a YouTube "studying with me" video.\n\nYou don\'t have to talk to them.',
+    tags: ['ADHD', 'focus', 'productivity'],
+  },
+];
+
+// ── PERSISTENCE ───────────────────────────────────────────────────
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem('lcars-adhd');
+    const s = raw ? JSON.parse(raw) : {};
+    return Object.assign({}, DEFAULTS, s, {
+      today: Object.assign({}, DEFAULTS.today, s.today || {}),
+      routineState: Object.assign({
+        morning: [], evening: [], custom: [], lastReset: null,
+      }, s.routineState || {}),
+    });
+  } catch (e) { return Object.assign({}, DEFAULTS); }
+}
+
+function saveState() {
+  try { localStorage.setItem('lcars-adhd', JSON.stringify(S)); } catch (e) {}
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────
+
+function goPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.querySelector(`[data-p="${name}"]`).classList.add('active');
+  currentPanel = name;
+  document.getElementById('content').scrollTop = 0;
+
+  const titles = {
+    home: 'ADHD COMMAND', tasks: 'MISSION LOG', timer: 'TEMPORAL REG.',
+    routine: 'DAILY PROTOCOL', sensory: 'SENSORY ARRAY',
+    regulate: 'EMERGENCY PROTOCOLS', notes: 'NEURAL BUFFER',
+  };
+  document.getElementById('page-title').textContent = titles[name] || name.toUpperCase();
+
+  if (name === 'home')     updateHome();
+  if (name === 'tasks')    renderTasks();
+  if (name === 'routine')  renderRoutine();
+  if (name === 'sensory')  renderSensoryPanel();
+  if (name === 'regulate') renderRegulate();
+  if (name === 'notes')    renderNotes();
+  if (name === 'timer')    updateTimerDisplay();
+}
+
+// ── CLOCK / STARDATE ──────────────────────────────────────────────
+
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2, '0');
+  const m = String(now.getMinutes()).padStart(2, '0');
+  document.getElementById('clock').textContent = h + ':' + m;
+
+  // Stardate: year + day-of-year fraction
+  const start = new Date(now.getFullYear(), 0, 0);
+  const diff = now - start;
+  const oneDay = 86400000;
+  const day = Math.floor(diff / oneDay);
+  const sd = now.getFullYear() + '.' + String(day).padStart(3, '0');
+  document.getElementById('stardate').textContent = 'STARDATE ' + sd;
+
+  checkDailyReset(now);
+}
+
+function checkDailyReset(now) {
+  const today = now.toDateString();
+  if (S.today.date !== today) {
+    S.today.date = today;
+    S.today.mood = null;
+    S.today.energy = 0;
+    S.timerSessions = [];
+    // reset routine completion each day
+    S.routineState.morning = buildDefaultState(DEFAULT_MORNING);
+    S.routineState.evening = buildDefaultState(DEFAULT_EVENING);
+    if (!S.routineState.custom || S.routineState.custom.length === 0) {
+      S.routineState.custom = [];
+    } else {
+      S.routineState.custom = S.routineState.custom.map(s => ({ ...s, done: false }));
+    }
+    S.routineState.lastReset = today;
+    saveState();
+    updateHome();
+  }
+}
+
+function buildDefaultState(steps) {
+  return steps.map((text, i) => ({ id: i, text, done: false }));
+}
+
+// ── HOME ──────────────────────────────────────────────────────────
+
+function setMood(mood) {
+  S.today.mood = mood;
+  saveState();
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('sel'));
+  document.querySelector(`[data-mood="${mood}"]`)?.classList.add('sel');
+  updateHome();
+}
+
+function setEnergy(e) {
+  S.today.energy = e;
+  saveState();
+  const labels = ['', 'CRASHED', 'LOW', 'MODERATE', 'GOOD', 'HIGH'];
+  document.getElementById('energy-label').textContent = 'ENERGY: ' + labels[e];
+  document.getElementById('energy-chip').textContent = 'ENERGY ' + labels[e];
+  for (let i = 1; i <= 5; i++) {
+    const seg = document.querySelector(`.eseg[data-e="${i}"]`);
+    seg.className = 'eseg' + (i <= e ? ' on-' + i : '');
+  }
+  updateHome();
+}
+
+function updateHome() {
+  // Mood
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('sel'));
+  if (S.today.mood) {
+    document.querySelector(`[data-mood="${S.today.mood}"]`)?.classList.add('sel');
+  }
+
+  // Energy
+  const eLabels = ['', 'CRASHED', 'LOW', 'MODERATE', 'GOOD', 'HIGH'];
+  if (S.today.energy > 0) {
+    document.getElementById('energy-label').textContent = 'ENERGY: ' + eLabels[S.today.energy];
+    document.getElementById('energy-chip').textContent = 'ENERGY ' + eLabels[S.today.energy];
+    for (let i = 1; i <= 5; i++) {
+      const seg = document.querySelector(`.eseg[data-e="${i}"]`);
+      if (seg) seg.className = 'eseg' + (i <= S.today.energy ? ' on-' + i : '');
+    }
+  }
+
+  // Stats
+  const pending = S.tasks.filter(t => !t.done).length;
+  const sessions = S.timerSessions.length;
+  const morning = S.routineState.morning || [];
+  const mDone = morning.filter(s => s.done).length;
+  const mTotal = morning.length;
+  const sensoryAvg = Object.values(liveSensory).reduce((a, b) => a + b, 0) / SENSES.length;
+
+  document.getElementById('hs-tasks').textContent = pending + ' PENDING';
+  document.getElementById('hs-sessions').textContent = sessions + ' TODAY';
+  document.getElementById('hs-routine').textContent = mTotal > 0 ? mDone + '/' + mTotal + ' STEPS' : '—';
+  document.getElementById('hs-sensory').textContent = sensoryAvg < 4 ? '● CALM' : sensoryAvg < 6 ? '◐ MODERATE' : '⚠ HIGH';
+
+  // Task badge
+  const badge = document.getElementById('task-badge');
+  if (pending > 0) {
+    badge.textContent = pending;
+    badge.style.display = 'flex';
+  } else {
+    badge.style.display = 'none';
+  }
+
+  document.getElementById('task-chip').textContent = pending + ' TASKS';
+
+  // Overwhelm card
+  const overwhelmCard = document.getElementById('overwhelm-card');
+  overwhelmCard.style.display = sensoryAvg >= 6 ? 'block' : 'none';
+
+  // Status chip
+  const sc = document.getElementById('status-chip');
+  if (sensoryAvg >= 7)      { sc.textContent = 'OVERLOAD'; sc.className = 'chip chip-red'; }
+  else if (sensoryAvg >= 5) { sc.textContent = 'ELEVATED'; sc.className = 'chip chip-orange'; }
+  else                      { sc.textContent = 'NOMINAL';  sc.className = 'chip chip-blue'; }
+}
+
+function quickAddTask() {
+  const inp = document.getElementById('quick-task');
+  const text = inp.value.trim();
+  if (!text) return;
+  S.tasks.push({ id: Date.now(), text, priority: 'medium', cat: 'general', done: false, created: new Date().toISOString() });
+  saveState();
+  inp.value = '';
+  updateHome();
+  showBrief('Task added to Mission Log');
+}
+
+// ── TASKS ─────────────────────────────────────────────────────────
+
+function addTask() {
+  const inp = document.getElementById('task-input');
+  const text = inp.value.trim();
+  if (!text) return;
+  const priority = document.getElementById('task-priority').value;
+  const cat = document.getElementById('task-cat').value;
+  S.tasks.push({ id: Date.now(), text, priority, cat, done: false, created: new Date().toISOString() });
+  saveState();
+  inp.value = '';
+  renderTasks();
+  updateHome();
+}
+
+function toggleTask(id) {
+  const t = S.tasks.find(t => t.id === id);
+  if (t) { t.done = !t.done; saveState(); renderTasks(); updateHome(); }
+}
+
+function deleteTask(id) {
+  S.tasks = S.tasks.filter(t => t.id !== id);
+  saveState(); renderTasks(); updateHome();
+}
+
+function clearDoneTasks() {
+  S.tasks = S.tasks.filter(t => !t.done);
+  saveState(); renderTasks(); updateHome();
+}
+
+function filterTasks(f) {
+  taskFilter = f;
+  document.getElementById('tf-all').className = 'btn btn-ghost btn-sm' + (f === 'all' ? ' btn-o' : '');
+  document.getElementById('tf-pending').className = 'btn btn-ghost btn-sm' + (f === 'pending' ? ' btn-o' : '');
+  renderTasks();
+}
+
+const PRIORITY_ORDER = { urgent: 0, high: 1, medium: 2, low: 3 };
+const PRIORITY_LABELS = { urgent: '🔴 URGENT', high: '🟠 HIGH', medium: '🟡 MEDIUM', low: '🔵 LOW' };
+
+function renderTasks() {
+  const list = document.getElementById('task-list');
+  let tasks = [...S.tasks];
+  if (taskFilter === 'pending') tasks = tasks.filter(t => !t.done);
+  tasks.sort((a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority]);
+
+  if (tasks.length === 0) {
+    list.innerHTML = '<div class="empty"><div class="ei">✓</div>NO TASKS — YOU\'RE CLEAR</div>';
+    return;
+  }
+
+  let html = '';
+  let lastPri = null;
+  for (const t of tasks) {
+    if (t.priority !== lastPri) {
+      html += `<div class="group-label">${PRIORITY_LABELS[t.priority]}</div>`;
+      lastPri = t.priority;
+    }
+    const age = timeSince(t.created);
+    html += `
+      <div class="task-item p-${t.priority} ${t.done ? 'done' : ''}">
+        <div class="tchk" onclick="toggleTask(${t.id})">${t.done ? '✓' : ''}</div>
+        <div class="tcontent">
+          <div class="ttext">${esc(t.text)}</div>
+          <div class="tmeta">${t.cat.toUpperCase()} · ${age}</div>
+        </div>
+        <button class="tdel" onclick="deleteTask(${t.id})">✕</button>
+      </div>`;
+  }
+  list.innerHTML = html;
+}
+
+// ── TIMER ─────────────────────────────────────────────────────────
+
+const CIRC = 2 * Math.PI * 88; // circumference
+
+function setTimerPreset(mins, type) {
+  if (timerRunning) timerReset();
+  S.timerTotal = mins * 60;
+  S.timerType = type;
+  timerRemaining = S.timerTotal;
+  saveState();
+  updateTimerDisplay();
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  // find matching preset button
+  document.querySelectorAll('.preset-btn').forEach(b => {
+    if (b.textContent.includes(mins + 'm')) b.classList.add('active');
+  });
+}
+
+function setCustomTimer() {
+  const v = parseInt(document.getElementById('custom-mins').value);
+  if (!v || v < 1 || v > 180) return showAlert('⚠', 'INVALID', 'Enter a number between 1 and 180 minutes.');
+  setTimerPreset(v, v <= 15 ? 'break' : 'focus');
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+}
+
+function timerStartPause() {
+  if (timerRunning) {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById('start-btn').textContent = '▶ RESUME';
+    document.getElementById('ring-fill').style.stroke = '#AA6600';
+  } else {
+    if (timerRemaining <= 0) { timerReset(); return; }
+    timerRunning = true;
+    document.getElementById('start-btn').textContent = '⏸ PAUSE';
+    timerInterval = setInterval(timerTick, 1000);
+  }
+}
+
+function timerTick() {
+  timerRemaining--;
+  if (timerRemaining <= 0) {
+    timerRemaining = 0;
+    timerComplete();
+  }
+  updateTimerDisplay();
+}
+
+function timerComplete() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  document.getElementById('start-btn').textContent = '▶ START';
+
+  // log session
+  S.timerSessions.push({
+    id: Date.now(),
+    type: S.timerType,
+    duration: S.timerTotal,
+    ts: new Date().toISOString(),
+  });
+  saveState();
+
+  const label = S.timerType === 'focus' ? 'FOCUS SESSION COMPLETE' : 'BREAK COMPLETE';
+  const msg = S.timerType === 'focus'
+    ? 'Great work! Take a break — you\'ve earned it.\n\nSessions today: ' + S.timerSessions.filter(s => s.type === 'focus').length
+    : 'Break over. Ready to focus again?';
+
+  if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+  playTone();
+  showAlert('✓', label, msg);
+  updateTimerDisplay();
+  updateHome();
+
+  document.getElementById('timer-session-count').textContent =
+    'SESSIONS TODAY: ' + S.timerSessions.filter(s => s.type === 'focus').length;
+  renderSessionLog();
+}
+
+function timerReset() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerRemaining = S.timerTotal;
+  document.getElementById('start-btn').textContent = '▶ START';
+  document.getElementById('ring-fill').style.stroke = 'var(--orange)';
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(timerRemaining / 60);
+  const s = timerRemaining % 60;
+  document.getElementById('timer-digits').textContent =
+    String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+  document.getElementById('timer-mode-label').textContent =
+    S.timerType === 'focus' ? 'FOCUS' : 'BREAK';
+
+  const total = S.timerTotal || 1;
+  const progress = timerRemaining / total;
+  const offset = CIRC * (1 - progress);
+  const fill = document.getElementById('ring-fill');
+  fill.setAttribute('stroke-dashoffset', offset.toFixed(1));
+
+  // Color shifts as time runs out
+  if (progress > 0.5)       fill.style.stroke = 'var(--orange)';
+  else if (progress > 0.2)  fill.style.stroke = 'var(--yellow)';
+  else                      fill.style.stroke = 'var(--red)';
+
+  document.getElementById('timer-session-count').textContent =
+    'SESSIONS TODAY: ' + S.timerSessions.filter(s => s.type === 'focus').length;
+
+  renderSessionLog();
+}
+
+function renderSessionLog() {
+  const log = document.getElementById('session-log');
+  if (S.timerSessions.length === 0) {
+    log.innerHTML = '<div class="empty"><div class="ei">◷</div>NO SESSIONS TODAY</div>';
+    return;
+  }
+  const html = [...S.timerSessions].reverse().slice(0, 8).map(s => {
+    const mins = Math.round(s.duration / 60);
+    const time = new Date(s.ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return `<div class="session-entry">
+      <div class="session-dot ${s.type === 'break' ? 'break' : ''}"></div>
+      <span>${s.type === 'focus' ? 'Focus' : 'Break'} — ${mins}m</span>
+      <span style="margin-left:auto">${time}</span>
+    </div>`;
+  }).join('');
+  log.innerHTML = html;
+}
+
+function playTone() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [440, 550, 660].forEach((f, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.frequency.value = f;
+      gain.gain.setValueAtTime(0.3, ctx.currentTime + i * 0.15);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.15 + 0.4);
+      osc.start(ctx.currentTime + i * 0.15);
+      osc.stop(ctx.currentTime + i * 0.15 + 0.4);
+    });
+  } catch (e) {}
+}
+
+// ── ROUTINES ──────────────────────────────────────────────────────
+
+function initRoutines() {
+  if (!S.routineState.morning || S.routineState.morning.length === 0) {
+    S.routineState.morning = buildDefaultState(DEFAULT_MORNING);
+  }
+  if (!S.routineState.evening || S.routineState.evening.length === 0) {
+    S.routineState.evening = buildDefaultState(DEFAULT_EVENING);
+  }
+  if (!S.routineState.custom) {
+    S.routineState.custom = S.customSteps
+      ? S.customSteps.map((text, i) => ({ id: i, text, done: false }))
+      : [];
+  }
+  saveState();
+}
+
+function selectRoutine(name) {
+  currentRoutine = name;
+  document.querySelectorAll('.rtab').forEach(b => b.classList.remove('active'));
+  document.getElementById('rtab-' + name).classList.add('active');
+  document.getElementById('custom-editor').style.display = name === 'custom' ? 'block' : 'none';
+  renderRoutine();
+}
+
+function getRoutineSteps() {
+  return S.routineState[currentRoutine] || [];
+}
+
+function renderRoutine() {
+  const steps = getRoutineSteps();
+  const done = steps.filter(s => s.done).length;
+  const pct = steps.length ? Math.round(done / steps.length * 100) : 0;
+
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-label-left').textContent = done + ' COMPLETE';
+  document.getElementById('prog-label-right').textContent = pct + '%';
+
+  const firstIncomplete = steps.findIndex(s => !s.done);
+
+  const html = steps.map((step, idx) => {
+    const isCurrent = idx === firstIncomplete;
+    return `
+      <div class="rstep ${step.done ? 'done' : ''} ${isCurrent ? 'current' : ''}" onclick="toggleStep(${step.id})">
+        <div class="rstep-circle">${step.done ? '✓' : ''}</div>
+        <div class="rstep-text">${esc(step.text)}</div>
+        ${isCurrent ? '<span class="current-tag">NEXT ▸</span>' : ''}
+        ${currentRoutine === 'custom' ? `<button style="background:none;border:none;color:#333;cursor:pointer;font-size:14px" onclick="deleteCustomStep(event,${step.id})">✕</button>` : ''}
+      </div>`;
+  }).join('');
+
+  document.getElementById('routine-steps').innerHTML =
+    steps.length ? html : '<div class="empty"><div class="ei">☰</div>NO STEPS — ADD ONE BELOW</div>';
+}
+
+function toggleStep(id) {
+  const steps = S.routineState[currentRoutine];
+  const step = steps.find(s => s.id === id);
+  if (step) { step.done = !step.done; saveState(); renderRoutine(); updateHome(); }
+}
+
+function resetRoutine() {
+  S.routineState[currentRoutine] = getRoutineSteps().map(s => ({ ...s, done: false }));
+  saveState(); renderRoutine();
+}
+
+function completeAllRoutine() {
+  S.routineState[currentRoutine] = getRoutineSteps().map(s => ({ ...s, done: true }));
+  saveState(); renderRoutine();
+}
+
+function addCustomStep() {
+  const inp = document.getElementById('custom-step-input');
+  const text = inp.value.trim();
+  if (!text) return;
+  if (!S.routineState.custom) S.routineState.custom = [];
+  S.routineState.custom.push({ id: Date.now(), text, done: false });
+  saveState(); inp.value = '';
+  renderRoutine();
+}
+
+function deleteCustomStep(e, id) {
+  e.stopPropagation();
+  S.routineState.custom = S.routineState.custom.filter(s => s.id !== id);
+  saveState(); renderRoutine();
+}
+
+// ── SENSORY ───────────────────────────────────────────────────────
+
+function renderSensoryPanel() {
+  const grid = document.getElementById('sensory-grid');
+  grid.innerHTML = SENSES.map(s => `
+    <div class="sense-item">
+      <div class="sense-name"><span class="sn-icon">${s.icon}</span> ${s.label}</div>
+      <input type="range" class="sense-slider" min="0" max="10" value="${liveSensory[s.key] || 0}"
+        oninput="updateSense('${s.key}', this.value, this.parentElement.querySelector('.sense-val'))">
+      <div class="sense-val">${liveSensory[s.key] || 0}</div>
+    </div>
+  `).join('');
+  updateOverwhelm();
+  renderSensoryLog();
+}
+
+function updateSense(key, val, display) {
+  liveSensory[key] = parseInt(val);
+  if (display) display.textContent = val;
+  S.today.sensory = { ...liveSensory };
+  saveState();
+  updateOverwhelm();
+  updateHome();
+}
+
+function updateOverwhelm() {
+  const vals = SENSES.map(s => liveSensory[s.key] || 0);
+  const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
+  const pct = (avg / 10) * 100;
+  const fill = document.getElementById('overwhelm-fill');
+  const text = document.getElementById('overwhelm-text');
+  if (!fill) return;
+
+  fill.style.width = Math.max(4, pct) + '%';
+  if (avg < 4)      { fill.className = 'overwhelm-fill low';    text.textContent = 'LOW LOAD'; }
+  else if (avg < 7) { fill.className = 'overwhelm-fill medium'; text.textContent = 'MODERATE LOAD'; }
+  else              { fill.className = 'overwhelm-fill high';   text.textContent = '⚠ HIGH LOAD'; }
+}
+
+function logSensory() {
+  const entry = {
+    id: Date.now(),
+    ts: new Date().toISOString(),
+    values: { ...liveSensory },
+    avg: SENSES.map(s => liveSensory[s.key] || 0).reduce((a, b) => a + b, 0) / SENSES.length,
+  };
+  S.sensoryLogs.unshift(entry);
+  if (S.sensoryLogs.length > 50) S.sensoryLogs.pop();
+  saveState();
+  renderSensoryLog();
+  showBrief('Sensory state logged');
+}
+
+function renderSensoryLog() {
+  const list = document.getElementById('sensory-log-list');
+  if (!list) return;
+  if (S.sensoryLogs.length === 0) {
+    list.innerHTML = '<div class="empty"><div class="ei">◎</div>NO LOGS YET</div>';
+    return;
+  }
+  list.innerHTML = S.sensoryLogs.slice(0, 10).map(e => {
+    const t = new Date(e.ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const level = e.avg < 4 ? 'low' : e.avg < 7 ? 'medium' : 'high';
+    const color = level === 'low' ? 'var(--green)' : level === 'medium' ? 'var(--yellow)' : 'var(--red)';
+    const label = level === 'low' ? 'LOW' : level === 'medium' ? 'MOD' : 'HIGH';
+    return `<div class="log-entry">
+      <div class="log-dot" style="background:${color}"></div>
+      <span style="color:${color}">${label}</span>
+      <span style="flex:1; padding:0 6px">${SENSES.map(s => e.values[s.key] || 0).join('-')}</span>
+      <span>${t}</span>
+    </div>`;
+  }).join('');
+}
+
+// ── REGULATE ──────────────────────────────────────────────────────
+
+function filterStrats(cat) {
+  stratFilter = cat;
+  document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderRegulate();
+}
+
+function renderRegulate() {
+  const list = document.getElementById('strat-list');
+  const strats = stratFilter === 'all'
+    ? STRATEGIES
+    : STRATEGIES.filter(s => s.cat === stratFilter);
+
+  list.innerHTML = strats.map(s => `
+    <div class="strat-card" onclick="toggleStrat('${s.id}', this)" id="strat-${s.id}">
+      <div class="strat-title">${s.title}</div>
+      <div class="strat-desc">${s.desc}</div>
+      <div class="strat-body">${s.body.replace(/\n/g, '<br>')}
+        <div class="strat-tags">${s.tags.map(t => `<span class="stag">${t}</span>`).join('')}</div>
+        ${s.action ? `<button class="btn btn-m btn-sm mt8" onclick="triggerStratAction('${s.id}', event)">ACTIVATE →</button>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleStrat(id, el) {
+  el.classList.toggle('open');
+}
+
+function triggerStratAction(id, e) {
+  e.stopPropagation();
+  const strat = STRATEGIES.find(s => s.id === id);
+  if (strat && strat.action) strat.action();
+}
+
+// ── BREATHING ────────────────────────────────────────────────────
+
+let breathInterval = null;
+let breathRunning = false;
+
+function showBreathCard() {
+  document.getElementById('breath-card').style.display = 'block';
+  document.getElementById('content').scrollTop = 0;
+}
+
+function startBreathing(type) {
+  if (breathRunning) stopBreathing();
+  breathRunning = true;
+  const circle = document.getElementById('breath-circle');
+  const label = document.getElementById('breath-label');
+
+  const patterns = {
+    box: [
+      { phase: 'INHALE', dur: 4000, cls: 'b-in' },
+      { phase: 'HOLD',   dur: 4000, cls: 'b-hold' },
+      { phase: 'EXHALE', dur: 4000, cls: 'b-out' },
+      { phase: 'HOLD',   dur: 4000, cls: 'b-hold' },
+    ],
+    '478': [
+      { phase: 'INHALE', dur: 4000,  cls: 'b-in' },
+      { phase: 'HOLD',   dur: 7000,  cls: 'b-hold' },
+      { phase: 'EXHALE', dur: 8000,  cls: 'b-out' },
+    ],
+  };
+
+  const seq = patterns[type] || patterns.box;
+  let i = 0;
+
+  function step() {
+    if (!breathRunning) return;
+    const p = seq[i % seq.length];
+    circle.className = 'breath-circle ' + p.cls;
+    circle.textContent = p.phase;
+    label.textContent = (p.dur / 1000) + 's · CYCLE ' + (Math.floor(i / seq.length) + 1);
+    breathInterval = setTimeout(step, p.dur);
+    i++;
+  }
+
+  step();
+}
+
+function stopBreathing() {
+  breathRunning = false;
+  clearTimeout(breathInterval);
+  const circle = document.getElementById('breath-circle');
+  if (circle) { circle.className = 'breath-circle'; circle.textContent = 'READY'; }
+  const label = document.getElementById('breath-label');
+  if (label) label.textContent = 'TAP A PATTERN ABOVE TO START';
+}
+
+// ── NOTES ────────────────────────────────────────────────────────
+
+function addNote() {
+  const inp = document.getElementById('note-input');
+  const text = inp.value.trim();
+  if (!text) return;
+  S.notes.unshift({ id: Date.now(), text, ts: new Date().toISOString() });
+  if (S.notes.length > 200) S.notes.pop();
+  saveState();
+  inp.value = '';
+  renderNotes();
+}
+
+function deleteNote(id) {
+  S.notes = S.notes.filter(n => n.id !== id);
+  saveState(); renderNotes();
+}
+
+function clearAllNotes() {
+  if (S.notes.length === 0) return;
+  showAlert('🗑', 'CLEAR NOTES?', 'Delete all ' + S.notes.length + ' notes?', () => {
+    S.notes = []; saveState(); renderNotes(); hideAlert();
+  });
+}
+
+function renderNotes() {
+  const list = document.getElementById('note-list');
+  const q = (document.getElementById('note-search')?.value || '').toLowerCase();
+  let notes = S.notes;
+  if (q) notes = notes.filter(n => n.text.toLowerCase().includes(q));
+
+  if (notes.length === 0) {
+    list.innerHTML = '<div class="empty"><div class="ei">✎</div>NO NOTES CAPTURED</div>';
+    return;
+  }
+
+  list.innerHTML = notes.map(n => {
+    const t = new Date(n.ts);
+    const timeStr = t.toLocaleDateString([], { month: 'short', day: 'numeric' }) + ' '
+      + t.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return `<div class="note-item">
+      <div class="note-text">${esc(n.text)}</div>
+      <div class="note-foot">
+        <span class="note-time">${timeStr}</span>
+        <button class="note-del" onclick="deleteNote(${n.id})">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── ALERT OVERLAY ────────────────────────────────────────────────
+
+let alertCallback = null;
+
+function showAlert(icon, title, msg, callback) {
+  document.getElementById('ov-icon').textContent = icon || '';
+  document.getElementById('ov-title').textContent = title || '';
+  document.getElementById('ov-msg').textContent = msg || '';
+  alertCallback = callback || null;
+  document.getElementById('overlay').classList.add('on');
+}
+
+function hideAlert() {
+  document.getElementById('overlay').classList.remove('on');
+  if (alertCallback) { const cb = alertCallback; alertCallback = null; cb(); }
+}
+
+// Brief non-blocking toast (just updates status chip briefly)
+function showBrief(msg) {
+  const sc = document.getElementById('status-chip');
+  const prev = sc.textContent;
+  const prevClass = sc.className;
+  sc.textContent = msg.toUpperCase();
+  sc.className = 'chip chip-green';
+  setTimeout(() => { sc.textContent = prev; sc.className = prevClass; }, 2000);
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/\n/g, '<br>');
+}
+
+function timeSince(isoStr) {
+  if (!isoStr) return '';
+  const ms = Date.now() - new Date(isoStr).getTime();
+  const m = Math.floor(ms / 60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return m + 'm ago';
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + 'h ago';
+  return Math.floor(h / 24) + 'd ago';
+}
+
+// ── KEYBOARD SHORTCUTS ────────────────────────────────────────────
+
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  const map = { h: 'home', t: 'tasks', p: 'timer', r: 'routine', s: 'sensory', g: 'regulate', n: 'notes' };
+  if (map[e.key]) goPanel(map[e.key]);
+  if (e.key === ' ' && currentPanel === 'timer') { e.preventDefault(); timerStartPause(); }
+});
+
+// Allow Enter to submit note
+document.addEventListener('keydown', e => {
+  if (e.target.id === 'note-input' && e.key === 'Enter' && e.shiftKey) {
+    e.preventDefault(); addNote();
+  }
+});
+
+// ── INIT ──────────────────────────────────────────────────────────
+
+function init() {
+  initRoutines();
+  liveSensory = { ...S.today.sensory };
+  updateHome();
+  updateClock();
+  setInterval(updateClock, 30000);
+
+  // Init timer display
+  timerRemaining = S.timerTotal || 1500;
+  updateTimerDisplay();
+
+  // Load today's mood/energy visually
+  if (S.today.mood) setMood(S.today.mood);
+  if (S.today.energy) setEnergy(S.today.energy);
+
+  // Register service worker for PWA if available
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+}
+
+init();
+</script>
+</body>
+</html>

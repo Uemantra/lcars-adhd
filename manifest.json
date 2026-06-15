@@ -1,0 +1,18 @@
+{
+  "name": "LCARS ADHD Command",
+  "short_name": "LCARS ADHD",
+  "description": "ADHD & Autism management system with LCARS interface",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#FF9900",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
