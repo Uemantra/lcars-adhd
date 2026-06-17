@@ -1014,6 +1014,38 @@
   body.large-text .strat-desc { font-size: 14px; }
   body.large-text .inp { font-size: 17px; }
 
+  /* ── BOOT SEQUENCE ───────────────────────────────── */
+  #boot {
+    position: fixed; inset: 0;
+    background: #000;
+    z-index: 400;
+    display: flex; flex-direction: column;
+    overflow: hidden; cursor: pointer;
+  }
+  #boot.done { animation: boot-fade 0.5s ease forwards; }
+  @keyframes boot-fade { to { opacity: 0; visibility: hidden; } }
+  #boot-bars { display: flex; height: 46px; gap: 6px; padding: 6px; flex-shrink: 0; }
+  #boot-bars .bb { height: 100%; border-radius: 0 14px 14px 0; transform: scaleX(0); transform-origin: left; animation: bb-grow 0.5s ease forwards; }
+  #boot-bars .bb:nth-child(1) { width: 22%; background: var(--orange); animation-delay: 0.1s; }
+  #boot-bars .bb:nth-child(2) { width: 14%; background: var(--peach);  animation-delay: 0.25s; }
+  #boot-bars .bb:nth-child(3) { width: 30%; background: var(--mauve);  animation-delay: 0.4s; }
+  #boot-bars .bb:nth-child(4) { width: 18%; background: var(--blue);   animation-delay: 0.55s; }
+  @keyframes bb-grow { to { transform: scaleX(1); } }
+  #boot-body { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 0 24px; text-align: center; }
+  #boot-logo { font-size: 54px; font-weight: 700; color: var(--orange); letter-spacing: 0.16em; line-height: 1; opacity: 0; animation: boot-logo-in 0.6s ease 0.4s forwards; }
+  #boot-logo small { display: block; font-size: 14px; color: var(--peach); letter-spacing: 0.3em; margin-top: 8px; }
+  @keyframes boot-logo-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  #boot-console { width: 100%; max-width: 340px; margin-top: 26px; min-height: 132px; text-align: left; font-family: 'Antonio', monospace; font-size: 12px; letter-spacing: 0.04em; color: var(--pale); }
+  #boot-console .bl { display: flex; justify-content: space-between; gap: 12px; padding: 2px 0; opacity: 0; animation: boot-line-in 0.25s ease forwards; }
+  #boot-console .bl .bok { color: var(--green); font-weight: 700; }
+  @keyframes boot-line-in { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: none; } }
+  #boot-progress { width: 100%; max-width: 340px; height: 14px; margin-top: 22px; background: #1a1208; border-radius: 7px; overflow: hidden; }
+  #boot-progress-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--orange), var(--yellow)); border-radius: 7px; transition: width 0.2s linear; }
+  #boot-skip { margin-top: 18px; font-size: 10px; letter-spacing: 0.18em; color: #885511; text-transform: uppercase; animation: boot-skip-pulse 1.4s ease-in-out infinite; }
+  @keyframes boot-skip-pulse { 0%,100% { opacity: 0.35; } 50% { opacity: 0.9; } }
+  body.reduce-motion #boot-bars .bb, body.reduce-motion #boot-logo, body.reduce-motion #boot-console .bl { animation: none !important; opacity: 1; transform: none; }
+  body.reduce-motion #boot-skip { animation: none !important; }
+
   /* ── MOBILE ──────────────────────────────────────── */
   @media (max-width: 420px) {
     :root { --left-w: 88px; --header-h: 58px; }
@@ -1027,6 +1059,18 @@
   </style>
 </head>
 <body>
+
+<!-- ── BOOT SEQUENCE ── -->
+<div id="boot">
+  <div id="boot-bars"><div class="bb"></div><div class="bb"></div><div class="bb"></div><div class="bb"></div></div>
+  <div id="boot-body">
+    <div id="boot-logo">LCARS<small>ADHD COMMAND</small></div>
+    <div id="boot-console"></div>
+    <div id="boot-progress"><div id="boot-progress-fill"></div></div>
+    <div id="boot-skip">TAP TO ENGAGE</div>
+  </div>
+</div>
+
 <div id="app">
 
   <!-- ── HEADER ── -->
@@ -1401,6 +1445,26 @@
         </div>
 
         <div class="card">
+          <div class="card-head">SOUND &amp; FEEDBACK</div>
+          <div class="set-row">
+            <div><div class="set-label">Sound Effects</div><div class="set-desc">LCARS beeps &amp; chimes</div></div>
+            <button class="toggle" id="tg-sound" onclick="toggleSetting('sound')"></button>
+          </div>
+          <div class="set-row">
+            <div><div class="set-label">Volume</div><div class="set-desc">Effect loudness</div></div>
+            <input type="range" id="set-volume" min="0" max="100" step="5" oninput="setVolume(this.value)" style="flex:0 0 130px; accent-color:var(--orange)">
+          </div>
+          <div class="set-row">
+            <div><div class="set-label">Haptics</div><div class="set-desc">Vibration feedback (if supported)</div></div>
+            <button class="toggle" id="tg-haptics" onclick="toggleSetting('haptics')"></button>
+          </div>
+          <div class="set-row">
+            <div><div class="set-label">Boot Sequence</div><div class="set-desc">LCARS startup animation on launch</div></div>
+            <button class="toggle" id="tg-bootOnLaunch" onclick="toggleSetting('bootOnLaunch')"></button>
+          </div>
+        </div>
+
+        <div class="card">
           <div class="card-head">DATA MANAGEMENT</div>
           <div class="text-dim mb8" style="line-height:1.5">Your data lives only on this device. Back it up before clearing your browser or switching phones.</div>
           <button class="btn btn-g w-full mb8" onclick="exportData()">⬇ EXPORT BACKUP</button>
@@ -1469,7 +1533,7 @@ const DEFAULTS = {
   wins: [],
   medsList: [],
   waterGoal: 8,
-  settings: { reduceMotion: false, largeText: false },
+  settings: { reduceMotion: false, largeText: false, sound: true, haptics: true, volume: 60, bootOnLaunch: true },
   routineState: {
     morning: [],
     evening: [],
@@ -1752,6 +1816,7 @@ function buildDefaultState(steps) {
 
 function setMood(mood) {
   S.today.mood = mood;
+  haptic(15);
   saveState();
   document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('sel'));
   document.querySelector(`[data-mood="${mood}"]`)?.classList.add('sel');
@@ -1760,6 +1825,7 @@ function setMood(mood) {
 
 function setEnergy(e) {
   S.today.energy = e;
+  haptic(15);
   saveState();
   const labels = ['', 'CRASHED', 'LOW', 'MODERATE', 'GOOD', 'HIGH'];
   document.getElementById('energy-label').textContent = 'ENERGY: ' + labels[e];
@@ -1856,7 +1922,11 @@ function addTask() {
 
 function toggleTask(id) {
   const t = S.tasks.find(t => t.id === id);
-  if (t) { t.done = !t.done; saveState(); renderTasks(); updateHome(); }
+  if (t) {
+    t.done = !t.done;
+    if (t.done) haptic(30);
+    saveState(); renderTasks(); updateHome();
+  }
 }
 
 function deleteTask(id) {
@@ -1978,8 +2048,8 @@ function timerComplete() {
     ? 'Great work! Take a break — you\'ve earned it.\n\nSessions today: ' + S.timerSessions.filter(s => s.type === 'focus').length
     : 'Break over. Ready to focus again?';
 
-  if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-  playTone();
+  haptic([200, 100, 200]);
+  sfx.complete();
   showAlert('✓', label, msg);
   updateTimerDisplay();
   updateHome();
@@ -2041,21 +2111,156 @@ function renderSessionLog() {
   log.innerHTML = html;
 }
 
-function playTone() {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    [440, 550, 660].forEach((f, i) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.frequency.value = f;
-      gain.gain.setValueAtTime(0.3, ctx.currentTime + i * 0.15);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.15 + 0.4);
-      osc.start(ctx.currentTime + i * 0.15);
-      osc.stop(ctx.currentTime + i * 0.15 + 0.4);
-    });
-  } catch (e) {}
+// ── SOUND & HAPTICS ENGINE ────────────────────────────────────────
+
+let audioCtx = null;
+let soundOn   = !(S.settings && S.settings.sound === false);   // default on
+let hapticsOn = !(S.settings && S.settings.haptics === false); // default on
+let masterVol = (S.settings && typeof S.settings.volume === 'number' ? S.settings.volume : 60) / 100;
+
+function ensureAudio() {
+  if (!audioCtx) {
+    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    catch (e) { return null; }
+  }
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
 }
+
+// Browsers block audio until the first user gesture — unlock on it.
+function unlockAudio() {
+  ensureAudio();
+  window.removeEventListener('pointerdown', unlockAudio);
+  window.removeEventListener('keydown', unlockAudio);
+}
+window.addEventListener('pointerdown', unlockAudio);
+window.addEventListener('keydown', unlockAudio);
+
+// Play one synthesized tone. opts: {freq, dur, type, vol, delay, glideTo}
+function tone({ freq = 440, dur = 0.12, type = 'sine', vol = 0.18, delay = 0, glideTo = null }) {
+  const ctx = ensureAudio();
+  if (!ctx) return;
+  const t0 = ctx.currentTime + delay;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, t0);
+  if (glideTo) osc.frequency.exponentialRampToValueAtTime(glideTo, t0 + dur);
+  osc.connect(gain); gain.connect(ctx.destination);
+  const peak = Math.max(0.0002, vol * masterVol);
+  gain.gain.setValueAtTime(0.0001, t0);
+  gain.gain.exponentialRampToValueAtTime(peak, t0 + 0.012);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  osc.start(t0);
+  osc.stop(t0 + dur + 0.02);
+}
+
+const sfx = {
+  tap()     { if (soundOn) tone({ freq: 660, dur: 0.07, type: 'square', vol: 0.10 }); },
+  nav()     { if (!soundOn) return; tone({ freq: 720, dur: 0.06, type: 'square', vol: 0.12 }); tone({ freq: 540, dur: 0.09, type: 'square', vol: 0.10, delay: 0.05 }); },
+  select()  { if (soundOn) tone({ freq: 880, dur: 0.08, type: 'triangle', vol: 0.13 }); },
+  confirm() { if (!soundOn) return; tone({ freq: 600, dur: 0.08, type: 'sine', vol: 0.15 }); tone({ freq: 900, dur: 0.12, type: 'sine', vol: 0.15, delay: 0.08 }); },
+  error()   { if (!soundOn) return; tone({ freq: 320, dur: 0.16, type: 'sawtooth', vol: 0.14, glideTo: 180 }); tone({ freq: 300, dur: 0.16, type: 'sawtooth', vol: 0.12, delay: 0.14 }); },
+  alert()   { if (!soundOn) return; tone({ freq: 740, dur: 0.1, type: 'triangle', vol: 0.16 }); tone({ freq: 988, dur: 0.14, type: 'triangle', vol: 0.16, delay: 0.1 }); },
+  win()     { if (!soundOn) return; [659, 784, 988, 1319].forEach((f, i) => tone({ freq: f, dur: 0.18, type: 'triangle', vol: 0.15, delay: i * 0.07 })); },
+  breathe(up) { if (soundOn) tone({ freq: up ? 330 : 440, dur: 0.5, type: 'sine', vol: 0.09, glideTo: up ? 440 : 300 }); },
+  complete() { if (!soundOn) return; [523, 659, 784, 1047].forEach((f, i) => tone({ freq: f, dur: 0.35, type: 'triangle', vol: 0.16, delay: i * 0.13 })); },
+  boot() {
+    if (!soundOn) return;
+    tone({ freq: 180, dur: 0.7, type: 'sawtooth', vol: 0.10, glideTo: 520 });
+    [392, 523, 659, 880].forEach((f, i) => tone({ freq: f, dur: 0.5, type: 'triangle', vol: 0.13, delay: 0.5 + i * 0.09 }));
+  },
+};
+
+// Haptic feedback (respects the Haptics setting).
+function haptic(pattern) {
+  if (hapticsOn && navigator.vibrate) navigator.vibrate(pattern);
+}
+
+// Backwards-compatible alias used by the timer.
+function playTone() { sfx.complete(); }
+
+// ── BOOT SEQUENCE ─────────────────────────────────────────────────
+
+const BOOT_LINES = [
+  ['CORE MEMORY', 'ONLINE'],
+  ['NEURAL BUFFER', 'MOUNTED'],
+  ['SENSORY ARRAY', 'CALIBRATED'],
+  ['TEMPORAL REGULATOR', 'SYNCED'],
+  ['DAILY PROTOCOLS', 'LOADED'],
+  ['LCARS INTERFACE', 'READY'],
+];
+
+let bootDone = false;
+
+function finishBoot() {
+  if (bootDone) return;
+  bootDone = true;
+  const boot = document.getElementById('boot');
+  if (!boot) return;
+  boot.classList.add('done');
+  setTimeout(() => { boot.style.display = 'none'; }, 550);
+}
+
+function runBoot() {
+  const boot = document.getElementById('boot');
+  if (!boot) return;
+
+  // Honor the "boot on launch" preference.
+  if (S.settings && S.settings.bootOnLaunch === false) {
+    boot.style.display = 'none';
+    bootDone = true;
+    return;
+  }
+
+  boot.addEventListener('click', () => { sfx.boot(); finishBoot(); });
+
+  const reduced = (S.settings && S.settings.reduceMotion) ||
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const out = document.getElementById('boot-console');
+  const fill = document.getElementById('boot-progress-fill');
+
+  const addLine = ([a, b]) => {
+    const d = document.createElement('div');
+    d.className = 'bl';
+    d.innerHTML = `<span>${a}</span><span class="bok">${b}</span>`;
+    out.appendChild(d);
+  };
+
+  if (reduced) {
+    BOOT_LINES.forEach(addLine);
+    if (fill) fill.style.width = '100%';
+    setTimeout(finishBoot, 900);
+    return;
+  }
+
+  let i = 0;
+  const total = BOOT_LINES.length;
+  const step = () => {
+    if (bootDone) return;
+    if (i < total) {
+      addLine(BOOT_LINES[i]);
+      sfx.tap();
+      i++;
+      if (fill) fill.style.width = Math.round((i / total) * 100) + '%';
+      setTimeout(step, 320);
+    } else {
+      setTimeout(() => { sfx.boot(); finishBoot(); }, 450);
+    }
+  };
+  setTimeout(step, 700);
+}
+
+// Global UI click feedback — routed by element type.
+document.addEventListener('pointerdown', e => {
+  if (!soundOn) return;
+  const el = e.target.closest('button, .tchk, .rstep, .strat-card, .med-chk');
+  if (!el) return;
+  if (el.classList.contains('nav-btn')) sfx.nav();
+  else if (el.matches('.mood-btn, .eseg, .preset-btn, .rtab, .cat-pill')) sfx.select();
+  else if (el.matches('.btn-o, .btn-g, .btn-b, .btn-m, .btn-y')) sfx.confirm();
+  else sfx.tap();
+}, true);
 
 // ── ROUTINES ──────────────────────────────────────────────────────
 
@@ -2115,7 +2320,11 @@ function renderRoutine() {
 function toggleStep(id) {
   const steps = S.routineState[currentRoutine];
   const step = steps.find(s => s.id === id);
-  if (step) { step.done = !step.done; saveState(); renderRoutine(); updateHome(); }
+  if (step) {
+    step.done = !step.done;
+    if (step.done) haptic(30);
+    saveState(); renderRoutine(); updateHome();
+  }
 }
 
 function resetRoutine() {
@@ -2125,7 +2334,9 @@ function resetRoutine() {
 
 function completeAllRoutine() {
   S.routineState[currentRoutine] = getRoutineSteps().map(s => ({ ...s, done: true }));
-  saveState(); renderRoutine();
+  haptic([40, 30, 40]);
+  sfx.win();
+  saveState(); renderRoutine(); updateHome();
 }
 
 function addCustomStep() {
@@ -2192,6 +2403,7 @@ function logSensory() {
   };
   S.sensoryLogs.unshift(entry);
   if (S.sensoryLogs.length > 50) S.sensoryLogs.pop();
+  haptic(20);
   saveState();
   renderSensoryLog();
   showBrief('Sensory state logged');
@@ -2293,6 +2505,8 @@ function startBreathing(type) {
     const p = seq[i % seq.length];
     circle.className = 'breath-circle ' + p.cls;
     circle.textContent = p.phase;
+    if (p.phase === 'INHALE') { sfx.breathe(true); haptic(20); }
+    else if (p.phase === 'EXHALE') sfx.breathe(false);
     label.textContent = (p.dur / 1000) + 's · CYCLE ' + (Math.floor(i / seq.length) + 1);
     breathInterval = setTimeout(step, p.dur);
     i++;
@@ -2318,6 +2532,7 @@ function addNote() {
   if (!text) return;
   S.notes.unshift({ id: Date.now(), text, ts: new Date().toISOString() });
   if (S.notes.length > 200) S.notes.pop();
+  haptic(20);
   saveState();
   inp.value = '';
   renderNotes();
@@ -2363,7 +2578,11 @@ function renderNotes() {
 // ── DAILY ESSENTIALS (HYDRATION + MEDS) ───────────────────────────
 
 function changeWater(delta) {
-  S.today.water = Math.max(0, (S.today.water || 0) + delta);
+  const before = S.today.water || 0;
+  S.today.water = Math.max(0, before + delta);
+  if (delta > 0) haptic(20);
+  // Little celebration when the daily goal is first reached.
+  if (before < S.waterGoal && S.today.water >= S.waterGoal) { haptic([40, 30, 40]); sfx.win(); }
   saveState();
   renderEssentials();
   updateHome();
@@ -2372,6 +2591,7 @@ function changeWater(delta) {
 function toggleMed(name) {
   if (!S.today.meds) S.today.meds = {};
   S.today.meds[name] = !S.today.meds[name];
+  if (S.today.meds[name]) haptic(30);
   saveState();
   renderEssentials();
 }
@@ -2438,7 +2658,8 @@ function logWin() {
   if (S.wins.length > 200) S.wins.pop();
   saveState();
   if (inp) inp.value = '';
-  if (navigator.vibrate) navigator.vibrate([40, 30, 40]);
+  haptic([40, 30, 40]);
+  sfx.win();
   showBrief('🎉 Win logged!');
   renderWins();
   updateHome();
@@ -2473,7 +2694,7 @@ function renderWins() {
 // ── SOS QUICK-CALM ────────────────────────────────────────────────
 
 function sos() {
-  if (navigator.vibrate) navigator.vibrate(30);
+  haptic(30);
   goPanel('regulate');
   showBreathCard();
   startBreathing('box');
@@ -2490,17 +2711,33 @@ function applySettings() {
 function toggleSetting(key) {
   if (!S.settings) S.settings = {};
   S.settings[key] = !S.settings[key];
+  if (key === 'sound')   soundOn = S.settings.sound;
+  if (key === 'haptics') hapticsOn = S.settings.haptics;
   saveState();
   applySettings();
   renderSettings();
+  // Give feedback after the flag is updated so it only plays when enabling.
+  if (key === 'sound' && soundOn) sfx.confirm();
+  if (key === 'haptics' && hapticsOn) haptic(30);
+}
+
+function setVolume(val) {
+  const v = Math.max(0, Math.min(100, parseInt(val) || 0));
+  masterVol = v / 100;
+  if (!S.settings) S.settings = {};
+  S.settings.volume = v;
+  saveState();
+  sfx.tap();
 }
 
 function renderSettings() {
   const s = S.settings || {};
-  ['reduceMotion', 'largeText'].forEach(k => {
+  ['reduceMotion', 'largeText', 'sound', 'haptics', 'bootOnLaunch'].forEach(k => {
     const el = document.getElementById('tg-' + k);
     if (el) el.classList.toggle('on', !!s[k]);
   });
+  const vol = document.getElementById('set-volume');
+  if (vol) vol.value = (typeof s.volume === 'number' ? s.volume : 60);
 }
 
 function exportData() {
@@ -2567,6 +2804,7 @@ function showAlert(icon, title, msg, callback) {
   if (callback) { cancel.style.display = ''; confirm.textContent = 'CONFIRM'; }
   else { cancel.style.display = 'none'; confirm.textContent = 'ACKNOWLEDGE'; }
   document.getElementById('overlay').classList.add('on');
+  sfx.alert();
 }
 
 function hideAlert(run) {
@@ -2635,6 +2873,7 @@ document.addEventListener('keydown', e => {
 // ── INIT ──────────────────────────────────────────────────────────
 
 function init() {
+  runBoot();
   initRoutines();
   applySettings();
   liveSensory = { ...S.today.sensory };
