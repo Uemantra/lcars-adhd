@@ -1,4 +1,4 @@
-const CACHE = 'lcars-adhd-v5';
+const CACHE = 'lcars-adhd-v6';
 const ASSETS = ['./', './index.html', './manifest.json', './icon.svg', './sw.js'];
 
 self.addEventListener('install', e => {

@@ -253,7 +253,12 @@
   .fdot {
     width: 9px; height: 9px;
     border-radius: 50%;
+    animation: fdot-pulse 2.4s ease-in-out infinite;
   }
+  .fdot:nth-child(2) { animation-delay: 0.5s; }
+  .fdot:nth-child(3) { animation-delay: 1s; }
+  @keyframes fdot-pulse { 0%,100% { opacity: 0.35; transform: scale(0.85); } 50% { opacity: 1; transform: scale(1); } }
+  body.reduce-motion .fdot { animation: none !important; opacity: 1; }
 
   /* ── PANELS ──────────────────────────────────────── */
   .panel { display: none; }
@@ -1046,6 +1051,56 @@
   body.reduce-motion #boot-bars .bb, body.reduce-motion #boot-logo, body.reduce-motion #boot-console .bl { animation: none !important; opacity: 1; transform: none; }
   body.reduce-motion #boot-skip { animation: none !important; }
 
+  /* ── HOLODECK / FUN ──────────────────────────────── */
+  .dispatch {
+    border-left: 3px solid var(--mauve);
+    padding: 4px 0 4px 12px;
+    font-style: italic;
+    color: var(--pale);
+    line-height: 1.55;
+    min-height: 48px;
+  }
+  .dispatch .src { display: block; font-style: normal; margin-top: 6px; font-size: 11px; color: var(--mauve); letter-spacing: 0.05em; }
+
+  .pad-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
+  .pad {
+    height: 64px; border: none; border-radius: 10px; cursor: pointer;
+    opacity: 0.5; transition: opacity 0.12s, transform 0.12s;
+    font-family: inherit;
+  }
+  .pad:active { transform: scale(0.96); }
+  .pad.lit { opacity: 1; box-shadow: 0 0 18px currentColor; }
+  .pad-0 { background: var(--orange); color: var(--orange); }
+  .pad-1 { background: var(--blue);   color: var(--blue); }
+  .pad-2 { background: var(--mauve);  color: var(--mauve); }
+  .pad-3 { background: var(--green);  color: var(--green); }
+  .game-stat { display: flex; justify-content: space-between; font-size: 13px; color: var(--pale); margin-top: 4px; }
+  .game-stat b { color: var(--yellow); }
+
+  #reflex-pad {
+    height: 92px; border-radius: 10px; border: none; width: 100%;
+    font-family: inherit; font-size: 18px; font-weight: 700; letter-spacing: 0.08em;
+    color: #000; cursor: pointer; transition: background 0.1s;
+  }
+  #reflex-pad.wait  { background: var(--red);    color: #fff; }
+  #reflex-pad.go    { background: var(--green); }
+  #reflex-pad.ready { background: var(--blue-dk); color: var(--blue); }
+
+  /* Confetti */
+  #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 350; overflow: hidden; }
+  .confetti-bit { position: absolute; width: 9px; height: 9px; will-change: transform, opacity; animation: confetti-fall linear forwards; }
+  @keyframes confetti-fall {
+    0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(102vh) rotate(720deg); opacity: 0.9; }
+  }
+  body.reduce-motion #confetti { display: none; }
+
+  /* Red Alert overlay */
+  #red-alert { position: fixed; inset: 0; pointer-events: none; z-index: 360; opacity: 0; background: radial-gradient(ellipse at center, transparent 40%, rgba(204,34,0,0.55) 100%); }
+  #red-alert.on { animation: red-alert-pulse 0.9s ease-in-out 4; }
+  @keyframes red-alert-pulse { 0%,100% { opacity: 0; } 50% { opacity: 1; } }
+  body.reduce-motion #red-alert.on { animation: none; opacity: 0.5; }
+
   /* ── MOBILE ──────────────────────────────────────── */
   @media (max-width: 420px) {
     :root { --left-w: 88px; --header-h: 58px; }
@@ -1118,6 +1173,9 @@
       </button>
       <button class="nav-btn" onclick="goPanel('notes')" data-p="notes">
         <span class="ni">✎</span> NOTES
+      </button>
+      <button class="nav-btn" onclick="goPanel('holodeck')" data-p="holodeck">
+        <span class="ni">⬢</span> HOLODECK
       </button>
       <button class="nav-btn" onclick="goPanel('settings')" data-p="settings">
         <span class="ni">⚙</span> SYSTEM
@@ -1425,6 +1483,40 @@
         <div id="note-list"></div>
       </div>
 
+      <!-- ═══════════════ HOLODECK ═══════════════ -->
+      <div id="panel-holodeck" class="panel">
+        <div class="sec-head">
+          <span class="sec-title">HOLODECK</span>
+          <span class="sec-sub">REC &amp; RESET</span>
+        </div>
+
+        <div class="card">
+          <div class="card-head">STARFLEET DISPATCH</div>
+          <div class="dispatch" id="dispatch">…</div>
+          <button class="btn btn-m btn-sm w-full mt8" onclick="newDispatch()">↻ NEW TRANSMISSION</button>
+        </div>
+
+        <div class="card">
+          <div class="card-head">BRIDGE DRILL · MEMORY</div>
+          <div class="text-dim mb8" style="line-height:1.5">Watch the console sequence, then repeat it. Each round adds one. How far can you get?</div>
+          <div class="pad-grid" id="pad-grid">
+            <button class="pad pad-0" data-pad="0" onclick="drillTap(0)"></button>
+            <button class="pad pad-1" data-pad="1" onclick="drillTap(1)"></button>
+            <button class="pad pad-2" data-pad="2" onclick="drillTap(2)"></button>
+            <button class="pad pad-3" data-pad="3" onclick="drillTap(3)"></button>
+          </div>
+          <div class="game-stat"><span id="drill-status">Tap START to begin</span><span>Best: <b id="drill-best">0</b></span></div>
+          <button class="btn btn-g btn-sm w-full mt8" id="drill-start" onclick="drillStart()">▶ START DRILL</button>
+        </div>
+
+        <div class="card">
+          <div class="card-head">RED ALERT REFLEX</div>
+          <div class="text-dim mb8" style="line-height:1.5">Wait for the panel to go green, then tap as fast as you can. Don't jump the gun!</div>
+          <button id="reflex-pad" class="ready" onclick="reflexTap()">TAP TO ARM</button>
+          <div class="game-stat"><span id="reflex-status">Standing by</span><span>Best: <b id="reflex-best">—</b></span></div>
+        </div>
+      </div>
+
       <!-- ═══════════════ SETTINGS ═══════════════ -->
       <div id="panel-settings" class="panel">
         <div class="sec-head">
@@ -1504,6 +1596,10 @@ Tap the red SOS button anytime to jump straight to a guided calming breath.</div
 <!-- ── SOS QUICK-CALM BUTTON ── -->
 <button id="sos-btn" onclick="sos()" title="Quick calming breath">SOS</button>
 
+<!-- ── FUN OVERLAYS ── -->
+<div id="confetti"></div>
+<div id="red-alert"></div>
+
 <!-- ── ALERT OVERLAY ── -->
 <div id="overlay">
   <div class="ov-box">
@@ -1532,6 +1628,7 @@ const DEFAULTS = {
   customSteps: [],
   wins: [],
   medsList: [],
+  games: { drillBest: 0, reflexBest: 0 },
   waterGoal: 8,
   settings: { reduceMotion: false, largeText: false, sound: true, haptics: true, volume: 60, bootOnLaunch: true },
   routineState: {
@@ -1727,6 +1824,7 @@ function loadState() {
     return Object.assign({}, DEFAULTS, s, {
       today: Object.assign({}, DEFAULTS.today, s.today || {}),
       settings: Object.assign({}, DEFAULTS.settings, s.settings || {}),
+      games: Object.assign({}, DEFAULTS.games, s.games || {}),
       routineState: Object.assign({
         morning: [], evening: [], custom: [], lastReset: null,
       }, s.routineState || {}),
@@ -1752,9 +1850,12 @@ function goPanel(name) {
     home: 'ADHD COMMAND', tasks: 'MISSION LOG', timer: 'TEMPORAL REG.',
     routine: 'DAILY PROTOCOL', sensory: 'SENSORY ARRAY',
     regulate: 'EMERGENCY PROTOCOLS', notes: 'NEURAL BUFFER',
-    settings: 'SYSTEM CONFIG',
+    holodeck: 'HOLODECK', settings: 'SYSTEM CONFIG',
   };
   document.getElementById('page-title').textContent = titles[name] || name.toUpperCase();
+
+  // Leaving the holodeck stops any game in progress.
+  if (name !== 'holodeck') { drillReset(); reflexAbort(); }
 
   if (name === 'home')     { updateHome(); renderEssentials(); renderWins(); }
   if (name === 'tasks')    renderTasks();
@@ -1763,6 +1864,7 @@ function goPanel(name) {
   if (name === 'regulate') renderRegulate();
   if (name === 'notes')    renderNotes();
   if (name === 'timer')    updateTimerDisplay();
+  if (name === 'holodeck') renderHolodeck();
   if (name === 'settings') renderSettings();
 }
 
@@ -2050,6 +2152,7 @@ function timerComplete() {
 
   haptic([200, 100, 200]);
   sfx.complete();
+  if (S.timerType === 'focus') confetti(50);
   showAlert('✓', label, msg);
   updateTimerDisplay();
   updateHome();
@@ -2256,6 +2359,8 @@ document.addEventListener('pointerdown', e => {
   if (!soundOn) return;
   const el = e.target.closest('button, .tchk, .rstep, .strat-card, .med-chk');
   if (!el) return;
+  // Game pads make their own tones — don't double up.
+  if (el.classList.contains('pad') || el.id === 'reflex-pad') return;
   if (el.classList.contains('nav-btn')) sfx.nav();
   else if (el.matches('.mood-btn, .eseg, .preset-btn, .rtab, .cat-pill')) sfx.select();
   else if (el.matches('.btn-o, .btn-g, .btn-b, .btn-m, .btn-y')) sfx.confirm();
@@ -2336,6 +2441,7 @@ function completeAllRoutine() {
   S.routineState[currentRoutine] = getRoutineSteps().map(s => ({ ...s, done: true }));
   haptic([40, 30, 40]);
   sfx.win();
+  confetti(60);
   saveState(); renderRoutine(); updateHome();
 }
 
@@ -2582,7 +2688,7 @@ function changeWater(delta) {
   S.today.water = Math.max(0, before + delta);
   if (delta > 0) haptic(20);
   // Little celebration when the daily goal is first reached.
-  if (before < S.waterGoal && S.today.water >= S.waterGoal) { haptic([40, 30, 40]); sfx.win(); }
+  if (before < S.waterGoal && S.today.water >= S.waterGoal) { haptic([40, 30, 40]); sfx.win(); confetti(50); }
   saveState();
   renderEssentials();
   updateHome();
@@ -2660,6 +2766,7 @@ function logWin() {
   if (inp) inp.value = '';
   haptic([40, 30, 40]);
   sfx.win();
+  confetti(40);
   showBrief('🎉 Win logged!');
   renderWins();
   updateHome();
@@ -2768,6 +2875,7 @@ function importData(input) {
       S = Object.assign({}, DEFAULTS, data, {
         today: Object.assign({}, DEFAULTS.today, data.today || {}),
         settings: Object.assign({}, DEFAULTS.settings, data.settings || {}),
+        games: Object.assign({}, DEFAULTS.games, data.games || {}),
         routineState: Object.assign({
           morning: [], evening: [], custom: [], lastReset: null,
         }, data.routineState || {}),
@@ -2867,6 +2975,246 @@ document.addEventListener('keydown', e => {
 document.addEventListener('keydown', e => {
   if (e.target.id === 'note-input' && e.key === 'Enter' && e.shiftKey) {
     e.preventDefault(); addNote();
+  }
+});
+
+// ── HOLODECK: LORE & GAMES ────────────────────────────────────────
+
+const LORE = [
+  ['Live long and prosper.', 'Spock'],
+  ['Things are only impossible until they\'re not.', 'Capt. Picard'],
+  ['It is possible to commit no mistakes and still lose. That is not weakness — that is life.', 'Capt. Picard'],
+  ['Insufficient facts always invite danger.', 'Spock'],
+  ['You can use logic to justify almost anything. That\'s its power — and its flaw.', 'Capt. Janeway'],
+  ['The only way to survive a mistake is to learn from it.', 'Cmdr. Riker'],
+  ['Without freedom of choice there is no creativity.', 'Capt. Kirk'],
+  ['Logic is the beginning of wisdom, not the end.', 'Spock'],
+  ['A small step today is still a step closer than yesterday.', 'Starfleet Cadet Handbook'],
+  ['Do you hear that? That\'s the sound of your own potential warming up.', 'Chief Engineer'],
+  ['Engage. The hardest part of any voyage is leaving the dock.', 'Capt. Picard'],
+  ['When you eliminate the impossible task into small ones, what remains is doable.', 'Lt. Cmdr. Data'],
+  ['There is a way out of every box, a solution to every puzzle.', 'Capt. Picard'],
+  ['Take the helm. Even a slow heading beats drifting.', 'Helm Officer'],
+  ['Your focus determines your reality.', 'Qui-Gon… wait, wrong franchise. Carry on, cadet.'],
+  ['Resistance to starting is futile. Begin, and momentum assimilates the rest.', 'Collective Wisdom'],
+  ['Tea. Earl Grey. Hot. Small comforts keep a captain steady.', 'Capt. Picard'],
+  ['Highly illogical to judge today by a single difficult moment.', 'Spock'],
+];
+
+function newDispatch() {
+  const el = document.getElementById('dispatch');
+  if (!el) return;
+  const [q, src] = LORE[Math.floor(Math.random() * LORE.length)];
+  el.innerHTML = `"${esc(q)}"<span class="src">— ${esc(src)}</span>`;
+}
+
+function renderHolodeck() {
+  if (!document.getElementById('dispatch').textContent.trim() ||
+      document.getElementById('dispatch').textContent === '…') newDispatch();
+  document.getElementById('drill-best').textContent = S.games.drillBest || 0;
+  document.getElementById('reflex-best').textContent =
+    S.games.reflexBest ? S.games.reflexBest + ' ms' : '—';
+}
+
+// ── Confetti ──────────────────────────────────────────────────────
+
+function confetti(count) {
+  if (S.settings && S.settings.reduceMotion) return;
+  const box = document.getElementById('confetti');
+  if (!box) return;
+  const colors = ['#FF9900', '#FF9966', '#FFCC00', '#99CCFF', '#CC99CC', '#66CC88'];
+  const n = count || 60;
+  for (let i = 0; i < n; i++) {
+    const bit = document.createElement('div');
+    bit.className = 'confetti-bit';
+    bit.style.left = Math.random() * 100 + 'vw';
+    bit.style.background = colors[Math.floor(Math.random() * colors.length)];
+    if (Math.random() > 0.5) bit.style.borderRadius = '50%';
+    const dur = 1.6 + Math.random() * 1.4;
+    bit.style.animationDuration = dur + 's';
+    bit.style.animationDelay = (Math.random() * 0.3) + 's';
+    box.appendChild(bit);
+    setTimeout(() => bit.remove(), (dur + 0.4) * 1000);
+  }
+}
+
+// ── Red Alert (easter egg / overload flourish) ────────────────────
+
+let redAlertTimer = null;
+function redAlert() {
+  const el = document.getElementById('red-alert');
+  if (!el) return;
+  el.classList.remove('on');
+  void el.offsetWidth; // restart animation
+  el.classList.add('on');
+  haptic([120, 80, 120, 80, 120]);
+  if (soundOn) {
+    [0, 0.5, 1, 1.5].forEach(d =>
+      tone({ freq: 660, dur: 0.35, type: 'sawtooth', vol: 0.16, delay: d, glideTo: 440 }));
+  }
+  clearTimeout(redAlertTimer);
+  redAlertTimer = setTimeout(() => el.classList.remove('on'), 3600);
+}
+
+// ── Bridge Drill (memory / Simon) ─────────────────────────────────
+
+const PAD_TONES = [392, 523, 659, 784]; // G4 C5 E5 G5
+let drillSeq = [], drillInput = [], drillActive = false, drillShowing = false;
+
+function flashPad(i, dur) {
+  const pad = document.querySelector(`.pad[data-pad="${i}"]`);
+  if (!pad) return;
+  pad.classList.add('lit');
+  if (soundOn) tone({ freq: PAD_TONES[i], dur: 0.3, type: 'triangle', vol: 0.16 });
+  setTimeout(() => pad.classList.remove('lit'), dur || 320);
+}
+
+function drillReset() {
+  drillSeq = []; drillInput = []; drillActive = false; drillShowing = false;
+  const btn = document.getElementById('drill-start');
+  if (btn) btn.textContent = '▶ START DRILL';
+}
+
+function drillStart() {
+  drillReset();
+  drillActive = true;
+  document.getElementById('drill-start').textContent = '↺ RESTART';
+  document.getElementById('drill-status').textContent = 'Watch carefully…';
+  drillNextRound();
+}
+
+function drillNextRound() {
+  drillInput = [];
+  drillSeq.push(Math.floor(Math.random() * 4));
+  drillShowSequence();
+}
+
+function drillShowSequence() {
+  drillShowing = true;
+  document.getElementById('drill-status').textContent = 'Watch carefully…';
+  let i = 0;
+  const tick = () => {
+    if (i >= drillSeq.length) {
+      drillShowing = false;
+      document.getElementById('drill-status').textContent =
+        'Your turn — repeat ' + drillSeq.length + ' step' + (drillSeq.length > 1 ? 's' : '');
+      return;
+    }
+    flashPad(drillSeq[i]);
+    i++;
+    setTimeout(tick, 560);
+  };
+  setTimeout(tick, 500);
+}
+
+function drillTap(i) {
+  if (!drillActive || drillShowing) return;
+  flashPad(i, 200);
+  drillInput.push(i);
+  const idx = drillInput.length - 1;
+  if (drillInput[idx] !== drillSeq[idx]) {
+    // Wrong — game over
+    const reached = drillSeq.length - 1;
+    drillActive = false;
+    document.getElementById('drill-start').textContent = '▶ START DRILL';
+    sfx.error();
+    haptic([60, 40, 120]);
+    let msg = 'Sequence broken at level ' + drillSeq.length + '.';
+    if (reached > (S.games.drillBest || 0)) {
+      S.games.drillBest = reached;
+      saveState();
+      document.getElementById('drill-best').textContent = reached;
+      msg += ' New record: ' + reached + '!';
+      confetti(50);
+    }
+    document.getElementById('drill-status').textContent = msg;
+    return;
+  }
+  if (drillInput.length === drillSeq.length) {
+    // Round cleared
+    sfx.confirm();
+    haptic(20);
+    if (drillSeq.length > (S.games.drillBest || 0)) {
+      S.games.drillBest = drillSeq.length;
+      saveState();
+      document.getElementById('drill-best').textContent = drillSeq.length;
+    }
+    document.getElementById('drill-status').textContent = 'Level ' + drillSeq.length + ' cleared!';
+    setTimeout(drillNextRound, 800);
+  }
+}
+
+// ── Red Alert Reflex (reaction time) ──────────────────────────────
+
+let reflexState = 'idle', reflexStart = 0, reflexTimer = null;
+
+function reflexAbort() {
+  clearTimeout(reflexTimer);
+  reflexState = 'idle';
+  const pad = document.getElementById('reflex-pad');
+  if (pad) { pad.className = 'ready'; pad.textContent = 'TAP TO ARM'; }
+  const st = document.getElementById('reflex-status');
+  if (st) st.textContent = 'Standing by';
+}
+
+function reflexTap() {
+  const pad = document.getElementById('reflex-pad');
+  const st = document.getElementById('reflex-status');
+  if (reflexState === 'idle') {
+    // Arm it
+    reflexState = 'waiting';
+    pad.className = 'wait';
+    pad.textContent = 'WAIT…';
+    st.textContent = 'Hold steady — wait for green';
+    const delay = 1200 + Math.random() * 2600;
+    reflexTimer = setTimeout(() => {
+      reflexState = 'go';
+      reflexStart = performance.now();
+      pad.className = 'go';
+      pad.textContent = 'ENGAGE!';
+      if (soundOn) tone({ freq: 880, dur: 0.12, type: 'square', vol: 0.16 });
+    }, delay);
+  } else if (reflexState === 'waiting') {
+    // Jumped the gun
+    clearTimeout(reflexTimer);
+    reflexState = 'idle';
+    pad.className = 'ready';
+    pad.textContent = 'TAP TO ARM';
+    st.textContent = 'Too soon, cadet! Tap to try again.';
+    sfx.error();
+    haptic(60);
+  } else if (reflexState === 'go') {
+    const ms = Math.round(performance.now() - reflexStart);
+    reflexState = 'idle';
+    pad.className = 'ready';
+    pad.textContent = 'TAP TO ARM';
+    sfx.confirm();
+    haptic(20);
+    const best = S.games.reflexBest || 0;
+    if (!best || ms < best) {
+      S.games.reflexBest = ms;
+      saveState();
+      document.getElementById('reflex-best').textContent = ms + ' ms';
+      st.textContent = ms + ' ms — new record! 🖖';
+      confetti(50);
+    } else {
+      st.textContent = ms + ' ms. Best: ' + best + ' ms';
+    }
+  }
+}
+
+// ── Easter egg: Konami code → Red Alert ───────────────────────────
+
+const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+let konamiPos = 0;
+document.addEventListener('keydown', e => {
+  const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+  konamiPos = (k === KONAMI[konamiPos]) ? konamiPos + 1 : (k === KONAMI[0] ? 1 : 0);
+  if (konamiPos === KONAMI.length) {
+    konamiPos = 0;
+    redAlert();
+    confetti(120);
+    showBrief('🚨 RED ALERT — All hands to battle stations!');
   }
 });
 
