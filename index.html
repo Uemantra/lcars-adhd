@@ -26,18 +26,10 @@
     --green:   #66CC88;
     --tan:     #FFAA33;
     --dim:     #553300;
-    /* Fluid layout dimensions — scale with viewport width so the UI
-       fits phones (e.g. Pixel 7a, 412px) and larger screens alike. */
-    --header-h: clamp(52px, 13vw, 68px);
-    --left-w:   clamp(76px, 22vw, 108px);
-    --gap:      clamp(4px, 1.4vw, 6px);
-    --elbow-r:  clamp(20px, 6vw, 28px);
-    --footer-h: clamp(40px, 11vw, 50px);
-    /* Fluid type scale */
-    --fs-title: clamp(15px, 4.6vw, 20px);
-    --fs-nav:   clamp(9px, 2.6vw, 11px);
-    --fs-body:  clamp(12px, 3.4vw, 14px);
-    --fs-sec:   clamp(16px, 5vw, 22px);
+    --header-h: 68px;
+    --left-w:   108px;
+    --gap:      6px;
+    --elbow-r:  28px;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -114,7 +106,7 @@
   }
 
   #header-title-row h1 {
-    font-size: var(--fs-title); font-weight: 700;
+    font-size: 19px; font-weight: 700;
     color: #000; letter-spacing: 0.08em;
     text-transform: uppercase;
     flex: 1;
@@ -187,7 +179,6 @@
     gap: 6px;
   }
 
-  .nav-btn { font-size: var(--fs-nav); }
   .nav-btn .ni { font-size: 13px; flex-shrink: 0; }
   .nav-btn:hover { background: var(--yellow); }
   .nav-btn.active { background: var(--pale); }
@@ -220,7 +211,7 @@
   /* ── FOOTER ──────────────────────────────────────── */
   #lcars-footer {
     display: flex;
-    height: var(--footer-h);
+    height: 50px;
     flex-shrink: 0;
   }
 
@@ -282,7 +273,7 @@
   }
 
   .sec-title {
-    font-size: var(--fs-sec); font-weight: 700;
+    font-size: 22px; font-weight: 700;
     color: var(--orange);
     letter-spacing: 0.07em;
     text-transform: uppercase;
@@ -462,43 +453,6 @@
   .qs-label { color: var(--blue); letter-spacing: 0.04em; font-size: 12px; }
   .qs-val   { color: var(--pale); font-weight: 700; }
 
-  /* ── MOMENTUM / STREAK ───────────────────────────── */
-  .streak-row {
-    display: flex; align-items: center; gap: 12px;
-    margin-bottom: 12px;
-  }
-  .streak-flame { font-size: 30px; line-height: 1; }
-  .streak-flame.cold { filter: grayscale(1) brightness(0.6); }
-  .streak-num {
-    font-size: 30px; font-weight: 700; color: var(--orange);
-    line-height: 1;
-  }
-  .streak-meta { display: flex; flex-direction: column; gap: 2px; }
-  .streak-cap { font-size: 11px; color: var(--blue); letter-spacing: 0.08em; text-transform: uppercase; }
-  .streak-best { font-size: 11px; color: var(--pale); }
-  .week-chart {
-    display: flex; justify-content: space-between; gap: 4px;
-    align-items: flex-end;
-  }
-  .wc-day { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-  .wc-bar-track {
-    width: 100%; height: 48px;
-    background: #160e00; border-radius: 4px;
-    display: flex; align-items: flex-end; overflow: hidden;
-  }
-  .wc-bar {
-    width: 100%; border-radius: 4px 4px 0 0;
-    background: var(--orange);
-    min-height: 2px;
-    transition: height 0.3s ease;
-  }
-  .wc-bar.is-today { background: var(--yellow); }
-  .wc-bar.empty { background: #2a1c00; }
-  .wc-bar.routine-done { box-shadow: inset 0 -4px 0 var(--green); }
-  .wc-lbl { font-size: 9px; color: var(--blue); letter-spacing: 0.03em; }
-  .wc-lbl.is-today { color: var(--yellow); font-weight: 700; }
-  .wc-dot { font-size: 8px; line-height: 1; height: 8px; }
-
   /* ── TASKS PANEL ─────────────────────────────────── */
   .task-item {
     display: flex;
@@ -574,12 +528,11 @@
 
   .timer-ring {
     position: relative;
-    width: clamp(150px, 52vw, 200px);
-    height: clamp(150px, 52vw, 200px);
+    width: 200px; height: 200px;
     margin-bottom: 14px;
   }
 
-  .timer-ring svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+  .timer-ring svg { transform: rotate(-90deg); }
 
   #ring-bg   { fill: none; stroke: #1a1000; stroke-width: 14; }
   #ring-fill { fill: none; stroke: var(--orange); stroke-width: 14; stroke-linecap: round;
@@ -593,7 +546,7 @@
   }
 
   #timer-digits {
-    font-size: clamp(34px, 11vw, 46px); font-weight: 700;
+    font-size: 46px; font-weight: 700;
     color: var(--orange);
     letter-spacing: -0.02em;
     display: block;
@@ -1005,201 +958,71 @@
   .ov-title { font-size: 20px; font-weight: 700; color: var(--orange); letter-spacing: 0.06em; margin-bottom: 8px; }
   .ov-msg   { font-size: 13px; color: var(--pale); line-height: 1.55; margin-bottom: 18px; white-space: pre-line; }
 
-  /* ── SETTINGS OVERLAY ────────────────────────────── */
-  #settings-overlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.9);
-    display: none;
-    align-items: center; justify-content: center;
-    z-index: 250;
-    padding: 18px;
-  }
-  #settings-overlay.on { display: flex; }
-  .set-box {
-    background: #0d0d0d;
-    border: 2px solid var(--orange);
-    border-radius: 14px;
-    padding: 18px;
-    max-width: 360px;
-    width: 100%;
-    max-height: 88vh;
-    overflow-y: auto;
-  }
-  .set-head {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 12px;
-  }
-  .set-title { font-size: var(--fs-sec); font-weight: 700; color: var(--orange); letter-spacing: 0.07em; }
-  .set-close {
-    background: var(--red); color: #fff; border: none;
-    width: 30px; height: 30px; border-radius: 50%;
-    font-size: 14px; cursor: pointer; flex-shrink: 0;
-  }
-  .set-group {
-    font-size: 10px; font-weight: 700; color: var(--blue);
-    letter-spacing: 0.14em; text-transform: uppercase;
-    margin: 16px 0 6px; padding-bottom: 4px;
-    border-bottom: 1px solid #2a1800;
-  }
-  .set-row {
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 12px; padding: 9px 0;
-    font-size: var(--fs-body); color: var(--pale);
-  }
-  .set-row input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--orange); flex-shrink: 0; }
-  .set-row input[type="range"]    { flex: 1; max-width: 150px; accent-color: var(--orange); }
-  .set-row input[type="number"]   {
-    width: 64px; background: #000; border: 1px solid #444;
-    color: var(--pale); font-family: inherit; font-size: 14px;
-    padding: 5px 7px; border-radius: 6px; text-align: center;
-  }
-  .set-actions { display: flex; gap: 6px; margin-top: 6px; }
-  .set-actions .btn { flex: 1; }
-  .set-note { font-size: 10px; color: #886633; margin-top: 10px; line-height: 1.5; }
+  /* ── DAILY ESSENTIALS ────────────────────────────── */
+  .ess-row { display: flex; align-items: center; gap: 10px; padding: 4px 0; }
+  .ess-label { font-size: 13px; color: var(--blue); letter-spacing: 0.04em; flex: 1; }
+  .water-dots { display: flex; gap: 4px; flex-wrap: wrap; margin: 8px 0 2px; }
+  .wdot { width: 16px; height: 22px; border-radius: 3px 3px 7px 7px; background: #1a1a1a; border: 1px solid #233; transition: background 0.2s, border-color 0.2s; }
+  .wdot.full { background: var(--blue); border-color: var(--blue); }
+  .step-btn { width: 34px; height: 34px; border-radius: 6px; border: none; background: var(--orange); color: #000; font-size: 22px; font-weight: 700; line-height: 1; cursor: pointer; font-family: 'Antonio', sans-serif; flex-shrink: 0; }
+  .step-btn:active { opacity: 0.7; }
+  .step-btn.minus { background: #2a2218; color: var(--pale); }
+  .med-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid #111; }
+  .med-row:last-child { border-bottom: none; }
+  .med-chk { width: 22px; height: 22px; border: 2px solid #333; border-radius: 5px; flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; background: transparent; color: transparent; transition: background 0.2s, border-color 0.2s; }
+  .med-row.taken .med-chk { background: var(--green); border-color: var(--green); color: #000; }
+  .med-name { flex: 1; font-size: 14px; color: var(--pale); }
+  .med-row.taken .med-name { color: #666; text-decoration: line-through; }
 
-  /* ── SOUND TOGGLE ────────────────────────────────── */
-  .chip-toggle {
-    cursor: pointer;
-    border: none;
-    font-family: inherit;
-    background: var(--dim);
-    color: var(--orange);
-    transition: opacity 0.15s;
-  }
-  .chip-toggle:active { opacity: 0.6; }
-  .chip-toggle.off { background: #222; color: #666; }
+  /* ── WINS ────────────────────────────────────────── */
+  .win-item { display: flex; gap: 8px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid #111; font-size: 13px; }
+  .win-item:last-child { border-bottom: none; }
+  .win-star { color: var(--yellow); flex-shrink: 0; }
+  .win-text { flex: 1; color: var(--pale); line-height: 1.35; word-break: break-word; }
+  .win-time { font-size: 9px; color: #444; flex-shrink: 0; }
 
-  /* ── BOOT SEQUENCE ───────────────────────────────── */
-  #boot {
-    position: fixed; inset: 0;
-    background: #000;
-    z-index: 400;
-    display: flex;
-    flex-direction: column;
-    padding: 0;
-    overflow: hidden;
-    cursor: pointer;
-  }
-  #boot.done { animation: boot-fade 0.5s ease forwards; }
-  @keyframes boot-fade { to { opacity: 0; visibility: hidden; } }
+  /* ── SETTINGS ────────────────────────────────────── */
+  .set-row { display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 1px solid #111; }
+  .set-row:last-child { border-bottom: none; }
+  .set-label { flex: 1; font-size: 14px; color: var(--pale); }
+  .set-desc { font-size: 10px; color: #555; margin-top: 2px; }
+  .toggle { width: 46px; height: 26px; border-radius: 13px; background: #2a2a2a; position: relative; cursor: pointer; flex-shrink: 0; transition: background 0.2s; border: none; }
+  .toggle.on { background: var(--green); }
+  .toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: transform 0.2s; }
+  .toggle.on::after { transform: translateX(20px); }
 
-  #boot-bars {
-    display: flex;
-    height: 46px;
-    gap: var(--gap);
-    padding: 6px;
-    flex-shrink: 0;
+  /* ── SOS BUTTON ──────────────────────────────────── */
+  #sos-btn {
+    position: fixed; right: 12px;
+    bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+    width: 54px; height: 54px; border-radius: 50%;
+    background: var(--red); color: #fff;
+    border: 3px solid #000;
+    box-shadow: 0 0 0 2px var(--red), 0 4px 14px rgba(0,0,0,0.65);
+    font-family: 'Antonio', sans-serif; font-size: 14px; font-weight: 700;
+    letter-spacing: 0.04em; cursor: pointer; z-index: 150;
+    display: flex; align-items: center; justify-content: center;
   }
-  #boot-bars .bb {
-    height: 100%;
-    border-radius: 0 14px 14px 0;
-    transform: scaleX(0);
-    transform-origin: left;
-    animation: bb-grow 0.5s ease forwards;
-  }
-  #boot-bars .bb:nth-child(1) { width: 22%; background: var(--orange); animation-delay: 0.1s; }
-  #boot-bars .bb:nth-child(2) { width: 14%; background: var(--peach);  animation-delay: 0.25s; }
-  #boot-bars .bb:nth-child(3) { width: 30%; background: var(--mauve);  animation-delay: 0.4s; }
-  #boot-bars .bb:nth-child(4) { width: 18%; background: var(--blue);   animation-delay: 0.55s; }
-  @keyframes bb-grow { to { transform: scaleX(1); } }
+  #sos-btn:active { transform: scale(0.92); }
 
-  #boot-body {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 0 24px;
-    text-align: center;
-  }
-  #boot-logo {
-    font-size: 54px; font-weight: 700;
-    color: var(--orange);
-    letter-spacing: 0.16em;
-    line-height: 1;
-    opacity: 0;
-    animation: boot-logo-in 0.6s ease 0.4s forwards;
-  }
-  #boot-logo small {
-    display: block;
-    font-size: 14px;
-    color: var(--peach);
-    letter-spacing: 0.3em;
-    margin-top: 8px;
-  }
-  @keyframes boot-logo-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  /* ── ACCESSIBILITY MODES ─────────────────────────── */
+  body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after { animation: none !important; transition: none !important; }
+  body.large-text .ttext, body.large-text .note-text, body.large-text .rstep-text,
+  body.large-text .strat-body, body.large-text .med-name, body.large-text .set-label,
+  body.large-text .win-text { font-size: 17px; }
+  body.large-text .strat-title { font-size: 18px; }
+  body.large-text .strat-desc { font-size: 14px; }
+  body.large-text .inp { font-size: 17px; }
 
-  #boot-console {
-    width: 100%;
-    max-width: 340px;
-    margin-top: 26px;
-    min-height: 132px;
-    text-align: left;
-    font-family: 'Antonio', monospace;
-    font-size: 12px;
-    letter-spacing: 0.04em;
-    color: var(--pale);
-  }
-  #boot-console .bl {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 2px 0;
-    opacity: 0;
-    animation: boot-line-in 0.25s ease forwards;
-  }
-  #boot-console .bl .bok { color: var(--green); font-weight: 700; }
-  @keyframes boot-line-in { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: none; } }
-
-  #boot-progress {
-    width: 100%;
-    max-width: 340px;
-    height: 14px;
-    margin-top: 22px;
-    background: #1a1208;
-    border-radius: 7px;
-    overflow: hidden;
-  }
-  #boot-progress-fill {
-    height: 100%;
-    width: 0;
-    background: linear-gradient(90deg, var(--orange), var(--yellow));
-    border-radius: 7px;
-    transition: width 0.2s linear;
-  }
-  #boot-skip {
-    margin-top: 18px;
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    color: var(--dim);
-    color: #885511;
-    text-transform: uppercase;
-    animation: boot-skip-pulse 1.4s ease-in-out infinite;
-  }
-  @keyframes boot-skip-pulse { 0%,100% { opacity: 0.35; } 50% { opacity: 0.9; } }
-
-  @media (prefers-reduced-motion: reduce) {
-    #boot-bars .bb, #boot-logo, #boot-console .bl { animation: none !important; opacity: 1; transform: none; }
-    #boot-skip { animation: none !important; }
-  }
-
-  /* ── MOBILE ──────────────────────────────────────────
-     Core dimensions/type already scale fluidly via clamp() in :root.
-     These rules only tighten spacing on phone-width screens. */
-  @media (max-width: 480px) {
-    .nav-btn { min-height: 42px; padding: 0 8px; }
-    #header-chips { flex-wrap: wrap; row-gap: 3px; }
-    #content { padding: 8px 8px 8px 0; }
-    .card { padding: 10px; }
-  }
-  @media (max-width: 380px) {
-    .nav-btn { min-height: 38px; }
-    .nav-btn .ni { font-size: 12px; }
-    .chip { padding: 2px 7px; }
-  }
-  /* Short screens (landscape phones): keep header/footer compact. */
-  @media (max-height: 560px) {
-    :root { --header-h: 48px; --footer-h: 36px; }
+  /* ── MOBILE ──────────────────────────────────────── */
+  @media (max-width: 420px) {
+    :root { --left-w: 88px; --header-h: 58px; }
+    .nav-btn { font-size: 9.5px; min-height: 40px; padding: 0 7px; }
+    .sec-title { font-size: 18px; }
+    .timer-ring { width: 170px; height: 170px; }
+    #timer-digits { font-size: 38px; }
+    #header-title-row h1 { font-size: 15px; }
+    #clock { font-size: 11px; }
   }
   </style>
 </head>
@@ -1218,11 +1041,9 @@
         <span id="clock">00:00</span>
       </div>
       <div id="header-chips">
-        <span class="chip chip-blue" id="status-chip" role="status" aria-live="polite">NOMINAL</span>
+        <span class="chip chip-blue" id="status-chip">NOMINAL</span>
         <span class="chip chip-orange" id="energy-chip">ENERGY —</span>
         <span class="chip chip-green" id="task-chip">0 TASKS</span>
-        <button class="chip chip-toggle" id="sound-toggle" onclick="toggleSound()" title="Toggle sound effects" aria-label="Toggle sound effects">♪ SND</button>
-        <button class="chip chip-toggle" id="settings-btn" onclick="openSettings()" title="Settings" aria-label="Open settings">⚙</button>
       </div>
     </div>
   </header>
@@ -1253,6 +1074,9 @@
       </button>
       <button class="nav-btn" onclick="goPanel('notes')" data-p="notes">
         <span class="ni">✎</span> NOTES
+      </button>
+      <button class="nav-btn" onclick="goPanel('settings')" data-p="settings">
+        <span class="ni">⚙</span> SYSTEM
       </button>
     </nav>
 
@@ -1295,18 +1119,32 @@
         </div>
 
         <div class="card">
+          <div class="card-head">DAILY ESSENTIALS</div>
+          <div class="ess-row">
+            <span class="ess-label">💧 HYDRATION</span>
+            <button class="step-btn minus" onclick="changeWater(-1)">−</button>
+            <span id="water-count" style="min-width:54px;text-align:center;font-weight:700;color:var(--blue)">0 / 8</span>
+            <button class="step-btn" onclick="changeWater(1)">+</button>
+          </div>
+          <div class="water-dots" id="water-dots"></div>
+          <div class="divider"></div>
+          <div class="ess-label" style="margin-bottom:4px">💊 MEDS &amp; SUPPLEMENTS</div>
+          <div id="med-list"></div>
+          <div class="row mt8" style="gap:6px">
+            <input id="med-input" class="inp" type="text" placeholder="Add med / vitamin..." style="flex:1" onkeydown="if(event.key==='Enter') addMed()">
+            <button class="btn btn-o btn-sm" onclick="addMed()">ADD</button>
+          </div>
+        </div>
+
+        <div class="card">
           <div class="card-head">TODAY AT A GLANCE</div>
           <div id="home-stats">
             <div class="qstat"><span class="qs-label">PENDING TASKS</span><span class="qs-val" id="hs-tasks">—</span></div>
             <div class="qstat"><span class="qs-label">FOCUS SESSIONS</span><span class="qs-val" id="hs-sessions">—</span></div>
             <div class="qstat"><span class="qs-label">ROUTINE PROGRESS</span><span class="qs-val" id="hs-routine">—</span></div>
+            <div class="qstat"><span class="qs-label">WINS TODAY</span><span class="qs-val" id="hs-wins">—</span></div>
             <div class="qstat"><span class="qs-label">SENSORY STATUS</span><span class="qs-val" id="hs-sensory">—</span></div>
           </div>
-        </div>
-
-        <div class="card">
-          <div class="card-head">MOMENTUM</div>
-          <div id="momentum"></div>
         </div>
 
         <div class="card">
@@ -1315,6 +1153,15 @@
             <input id="quick-task" class="inp" type="text" placeholder="Add a task..." style="flex:1">
             <button class="btn btn-o btn-sm" onclick="quickAddTask()">ADD</button>
           </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">⭐ WINS &amp; DOPAMINE</div>
+          <div class="row" style="gap:6px">
+            <input id="win-input" class="inp" type="text" placeholder="Log a win, big or small..." style="flex:1" onkeydown="if(event.key==='Enter') logWin()">
+            <button class="btn btn-y btn-sm" onclick="logWin()">LOG</button>
+          </div>
+          <div id="win-list" class="mt8"></div>
         </div>
 
         <div class="card" id="overwhelm-card" style="display:none">
@@ -1371,7 +1218,7 @@
 
         <div class="timer-wrap">
           <div class="timer-ring">
-            <svg width="100%" height="100%" viewBox="0 0 200 200">
+            <svg width="200" height="200" viewBox="0 0 200 200">
               <circle id="ring-bg"   cx="100" cy="100" r="88"/>
               <circle id="ring-fill" cx="100" cy="100" r="88"
                 stroke-dasharray="552.9" stroke-dashoffset="0"/>
@@ -1523,7 +1370,7 @@
           <textarea id="note-input" class="inp" placeholder="Dump thoughts here... tap add when done" rows="4"></textarea>
           <div class="row mt8">
             <button class="btn btn-o" onclick="addNote()" style="flex:1">CAPTURE THOUGHT</button>
-            <button class="btn btn-ghost btn-sm" onclick="clearAllNotes()" title="Clear all notes" aria-label="Clear all notes">🗑</button>
+            <button class="btn btn-ghost btn-sm" onclick="clearAllNotes()" title="Clear all notes">🗑</button>
           </div>
         </div>
 
@@ -1532,6 +1379,43 @@
         </div>
 
         <div id="note-list"></div>
+      </div>
+
+      <!-- ═══════════════ SETTINGS ═══════════════ -->
+      <div id="panel-settings" class="panel">
+        <div class="sec-head">
+          <span class="sec-title">SYSTEM CONFIG</span>
+          <span class="sec-sub">SETTINGS &amp; DATA</span>
+        </div>
+
+        <div class="card">
+          <div class="card-head">ACCESSIBILITY</div>
+          <div class="set-row">
+            <div><div class="set-label">Reduce Motion</div><div class="set-desc">Disable animations &amp; transitions</div></div>
+            <button class="toggle" id="tg-reduceMotion" onclick="toggleSetting('reduceMotion')"></button>
+          </div>
+          <div class="set-row">
+            <div><div class="set-label">Large Text</div><div class="set-desc">Bigger, easier-to-read text</div></div>
+            <button class="toggle" id="tg-largeText" onclick="toggleSetting('largeText')"></button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">DATA MANAGEMENT</div>
+          <div class="text-dim mb8" style="line-height:1.5">Your data lives only on this device. Back it up before clearing your browser or switching phones.</div>
+          <button class="btn btn-g w-full mb8" onclick="exportData()">⬇ EXPORT BACKUP</button>
+          <label class="btn btn-b w-full mb8" style="cursor:pointer">⬆ IMPORT BACKUP
+            <input type="file" accept="application/json,.json" onchange="importData(this)" style="display:none">
+          </label>
+          <button class="btn btn-r w-full" onclick="resetAllData()">⌫ ERASE ALL DATA</button>
+        </div>
+
+        <div class="card">
+          <div class="card-head">ABOUT</div>
+          <div class="text-dim" style="line-height:1.6">LCARS ADHD COMMAND — a personal command center for ADHD &amp; autism. Tasks, focus timer, routines, sensory tracking, and regulation tools. Fully offline. No accounts, no tracking, no cloud.
+
+Tap the red SOS button anytime to jump straight to a guided calming breath.</div>
+        </div>
       </div>
 
     </div><!-- /content -->
@@ -1553,18 +1437,8 @@
 
 </div><!-- /app -->
 
-<!-- ── BOOT SEQUENCE ── -->
-<div id="boot">
-  <div id="boot-bars">
-    <div class="bb"></div><div class="bb"></div><div class="bb"></div><div class="bb"></div>
-  </div>
-  <div id="boot-body">
-    <div id="boot-logo">LCARS<small>ADHD COMMAND</small></div>
-    <div id="boot-console"></div>
-    <div id="boot-progress"><div id="boot-progress-fill"></div></div>
-    <div id="boot-skip">TAP TO ENGAGE</div>
-  </div>
-</div>
+<!-- ── SOS QUICK-CALM BUTTON ── -->
+<button id="sos-btn" onclick="sos()" title="Quick calming breath">SOS</button>
 
 <!-- ── ALERT OVERLAY ── -->
 <div id="overlay">
@@ -1572,54 +1446,10 @@
     <div class="ov-icon" id="ov-icon"></div>
     <div class="ov-title" id="ov-title"></div>
     <div class="ov-msg" id="ov-msg"></div>
-    <button class="btn btn-o w-full" onclick="hideAlert()">ACKNOWLEDGE</button>
-  </div>
-</div>
-
-<!-- ── SETTINGS OVERLAY ── -->
-<div id="settings-overlay" role="dialog" aria-modal="true" aria-label="Settings" onclick="if(event.target===this)closeSettings()">
-  <div class="set-box">
-    <div class="set-head">
-      <span class="set-title">SYSTEM CONFIG</span>
-      <button class="set-close" onclick="closeSettings()" aria-label="Close settings">✕</button>
+    <div class="row" style="gap:8px">
+      <button class="btn btn-ghost w-full" id="ov-cancel" onclick="hideAlert(false)" style="display:none">CANCEL</button>
+      <button class="btn btn-o w-full" id="ov-confirm" onclick="hideAlert(true)">ACKNOWLEDGE</button>
     </div>
-
-    <div class="set-group">AUDIO</div>
-    <label class="set-row">
-      <span>Sound effects</span>
-      <input type="checkbox" id="set-sound" onchange="setSetting('sound', this.checked)">
-    </label>
-    <label class="set-row">
-      <span>Volume</span>
-      <input type="range" id="set-volume" min="0" max="100" step="5" oninput="setVolume(this.value)">
-    </label>
-
-    <div class="set-group">STARTUP</div>
-    <label class="set-row">
-      <span>Boot sequence on launch</span>
-      <input type="checkbox" id="set-boot" onchange="setSetting('bootOnLaunch', this.checked)">
-    </label>
-
-    <div class="set-group">TIMER</div>
-    <label class="set-row">
-      <span>End-of-timer notifications</span>
-      <input type="checkbox" id="set-notify" onchange="toggleNotifications(this.checked)">
-    </label>
-    <label class="set-row">
-      <span>Default focus (min)</span>
-      <input type="number" id="set-focus" min="1" max="180" onchange="setDefaultFocus(this.value)">
-    </label>
-
-    <div class="set-group">DATA</div>
-    <div class="set-actions">
-      <button class="btn btn-b btn-sm" onclick="exportData()">⭳ EXPORT</button>
-      <button class="btn btn-o btn-sm" onclick="document.getElementById('import-file').click()">⭱ IMPORT</button>
-      <button class="btn btn-r btn-sm" onclick="resetAllData()">⟲ RESET</button>
-    </div>
-    <input type="file" id="import-file" accept="application/json" style="display:none" onchange="importData(event)">
-    <div class="set-note">Data is stored on this device only. Export regularly to back up.</div>
-
-    <button class="btn btn-ghost w-full mt8" onclick="closeSettings()">CLOSE</button>
   </div>
 </div>
 
@@ -1636,6 +1466,10 @@ const DEFAULTS = {
   notes: [],
   timerSessions: [],
   customSteps: [],
+  wins: [],
+  medsList: [],
+  waterGoal: 8,
+  settings: { reduceMotion: false, largeText: false },
   routineState: {
     morning: [],
     evening: [],
@@ -1646,14 +1480,12 @@ const DEFAULTS = {
     date: null,
     mood: null,
     energy: 0,
-    tasksDone: 0,
+    water: 0,
+    meds: {},
     sensory: { visual: 3, auditory: 3, tactile: 3, smell: 2, vestibular: 2, intero: 3 },
   },
-  history: [],      // per-day snapshots: { key, focus, tasks, rDone, rTotal, mood, energy }
-  bestStreak: 0,
   timerTotal: 1500,  // 25 min in seconds
   timerType: 'focus',
-  settings: { sound: true, volume: 60, bootOnLaunch: true, notify: false, defaultFocus: 25 },
 };
 
 let S = loadState();
@@ -1830,10 +1662,10 @@ function loadState() {
     const s = raw ? JSON.parse(raw) : {};
     return Object.assign({}, DEFAULTS, s, {
       today: Object.assign({}, DEFAULTS.today, s.today || {}),
+      settings: Object.assign({}, DEFAULTS.settings, s.settings || {}),
       routineState: Object.assign({
         morning: [], evening: [], custom: [], lastReset: null,
       }, s.routineState || {}),
-      settings: Object.assign({}, DEFAULTS.settings, s.settings || {}),
     });
   } catch (e) { return Object.assign({}, DEFAULTS); }
 }
@@ -1856,16 +1688,18 @@ function goPanel(name) {
     home: 'ADHD COMMAND', tasks: 'MISSION LOG', timer: 'TEMPORAL REG.',
     routine: 'DAILY PROTOCOL', sensory: 'SENSORY ARRAY',
     regulate: 'EMERGENCY PROTOCOLS', notes: 'NEURAL BUFFER',
+    settings: 'SYSTEM CONFIG',
   };
   document.getElementById('page-title').textContent = titles[name] || name.toUpperCase();
 
-  if (name === 'home')     updateHome();
+  if (name === 'home')     { updateHome(); renderEssentials(); renderWins(); }
   if (name === 'tasks')    renderTasks();
   if (name === 'routine')  renderRoutine();
   if (name === 'sensory')  renderSensoryPanel();
   if (name === 'regulate') renderRegulate();
   if (name === 'notes')    renderNotes();
   if (name === 'timer')    updateTimerDisplay();
+  if (name === 'settings') renderSettings();
 }
 
 // ── CLOCK / STARDATE ──────────────────────────────────────────────
@@ -1890,12 +1724,11 @@ function updateClock() {
 function checkDailyReset(now) {
   const today = now.toDateString();
   if (S.today.date !== today) {
-    // Archive the day that is ending before we clear it.
-    if (S.today.date) snapshotPrevDay();
     S.today.date = today;
     S.today.mood = null;
     S.today.energy = 0;
-    S.today.tasksDone = 0;
+    S.today.water = 0;
+    S.today.meds = {};
     S.timerSessions = [];
     // reset routine completion each day
     S.routineState.morning = buildDefaultState(DEFAULT_MORNING);
@@ -1964,9 +1797,13 @@ function updateHome() {
   const mTotal = morning.length;
   const sensoryAvg = Object.values(liveSensory).reduce((a, b) => a + b, 0) / SENSES.length;
 
+  const todayStr = new Date().toDateString();
+  const winsToday = (S.wins || []).filter(w => new Date(w.ts).toDateString() === todayStr).length;
+
   document.getElementById('hs-tasks').textContent = pending + ' PENDING';
   document.getElementById('hs-sessions').textContent = sessions + ' TODAY';
   document.getElementById('hs-routine').textContent = mTotal > 0 ? mDone + '/' + mTotal + ' STEPS' : '—';
+  document.getElementById('hs-wins').textContent = winsToday + (winsToday === 1 ? ' WIN' : ' WINS');
   document.getElementById('hs-sensory').textContent = sensoryAvg < 4 ? '● CALM' : sensoryAvg < 6 ? '◐ MODERATE' : '⚠ HIGH';
 
   // Task badge
@@ -1989,124 +1826,6 @@ function updateHome() {
   if (sensoryAvg >= 7)      { sc.textContent = 'OVERLOAD'; sc.className = 'chip chip-red'; }
   else if (sensoryAvg >= 5) { sc.textContent = 'ELEVATED'; sc.className = 'chip chip-orange'; }
   else                      { sc.textContent = 'NOMINAL';  sc.className = 'chip chip-blue'; }
-
-  renderMomentum();
-}
-
-// ── STREAKS & WEEKLY STATS ────────────────────────────────────────
-
-function dayKey(d) {
-  const x = new Date(d);
-  return x.getFullYear() + '-' +
-    String(x.getMonth() + 1).padStart(2, '0') + '-' +
-    String(x.getDate()).padStart(2, '0');
-}
-
-// A day "counts" toward a streak if there was any focus, task, or routine activity.
-function isActive(rec) {
-  return !!rec && (rec.focus > 0 || rec.tasks > 0 || rec.rDone > 0);
-}
-
-// Live snapshot of the current day from working state.
-function todayRecord() {
-  const morning = S.routineState.morning || [];
-  const evening = S.routineState.evening || [];
-  const custom  = S.routineState.custom || [];
-  const rTotal = morning.length + evening.length + custom.length;
-  const rDone  = morning.filter(s => s.done).length +
-                 evening.filter(s => s.done).length +
-                 custom.filter(s => s.done).length;
-  return {
-    key: dayKey(new Date()),
-    focus: S.timerSessions.filter(s => s.type === 'focus').length,
-    tasks: S.today.tasksDone || 0,
-    rDone, rTotal,
-    mood: S.today.mood, energy: S.today.energy,
-  };
-}
-
-// Archive the day that is ending (called from checkDailyReset, before clearing).
-function snapshotPrevDay() {
-  const rec = todayRecord();
-  rec.key = dayKey(S.today.date);
-  S.history = (S.history || []).filter(h => h.key !== rec.key);
-  S.history.push(rec);
-  if (S.history.length > 60) S.history = S.history.slice(-60);
-}
-
-function historyMap() {
-  const map = {};
-  (S.history || []).forEach(h => { map[h.key] = h; });
-  const tr = todayRecord();
-  map[tr.key] = tr; // today's live data wins
-  return map;
-}
-
-function computeStreak() {
-  const map = historyMap();
-  let streak = 0;
-  const d = new Date();
-  // If today has no activity yet, count from yesterday so the streak holds through the day.
-  if (!isActive(map[dayKey(d)])) d.setDate(d.getDate() - 1);
-  while (isActive(map[dayKey(d)])) {
-    streak++;
-    d.setDate(d.getDate() - 1);
-  }
-  return streak;
-}
-
-function buildWeek() {
-  const map = historyMap();
-  const days = [];
-  const today = new Date();
-  for (let i = 6; i >= 0; i--) {
-    const d = new Date(today);
-    d.setDate(today.getDate() - i);
-    const rec = map[dayKey(d)] || { focus: 0, tasks: 0, rDone: 0, rTotal: 0 };
-    days.push({ date: d, rec, isToday: i === 0 });
-  }
-  return days;
-}
-
-function renderMomentum() {
-  const el = document.getElementById('momentum');
-  if (!el) return;
-
-  const streak = computeStreak();
-  if (streak > (S.bestStreak || 0)) { S.bestStreak = streak; saveState(); }
-
-  const week = buildWeek();
-  const maxScore = Math.max(1, ...week.map(d => d.rec.focus + d.rec.tasks));
-  const dayInitials = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-
-  let wkFocus = 0, wkTasks = 0;
-  const bars = week.map(d => {
-    const score = d.rec.focus + d.rec.tasks;
-    wkFocus += d.rec.focus; wkTasks += d.rec.tasks;
-    const h = score > 0 ? Math.max(12, Math.round(score / maxScore * 100)) : 0;
-    const rDoneAll = d.rec.rTotal > 0 && d.rec.rDone === d.rec.rTotal;
-    const cls = ['wc-bar',
-      score === 0 ? 'empty' : '',
-      d.isToday ? 'is-today' : '',
-      rDoneAll ? 'routine-done' : ''].filter(Boolean).join(' ');
-    const title = `${d.rec.focus} focus · ${d.rec.tasks} tasks` +
-      (d.rec.rTotal ? ` · routine ${d.rec.rDone}/${d.rec.rTotal}` : '');
-    return `<div class="wc-day" title="${title}">
-      <div class="wc-bar-track"><div class="${cls}" style="height:${h}%"></div></div>
-      <div class="wc-lbl${d.isToday ? ' is-today' : ''}">${dayInitials[d.date.getDay()]}</div>
-    </div>`;
-  }).join('');
-
-  el.innerHTML = `
-    <div class="streak-row">
-      <span class="streak-flame${streak === 0 ? ' cold' : ''}">${streak === 0 ? '❄' : '🔥'}</span>
-      <span class="streak-num">${streak}</span>
-      <div class="streak-meta">
-        <span class="streak-cap">Day Streak</span>
-        <span class="streak-best">Best: ${S.bestStreak || 0} · 7d: ${wkFocus} focus · ${wkTasks} tasks</span>
-      </div>
-    </div>
-    <div class="week-chart">${bars}</div>`;
 }
 
 function quickAddTask() {
@@ -2137,16 +1856,7 @@ function addTask() {
 
 function toggleTask(id) {
   const t = S.tasks.find(t => t.id === id);
-  if (t) {
-    t.done = !t.done;
-    if (t.done) {
-      S.today.tasksDone = (S.today.tasksDone || 0) + 1;
-      if (navigator.vibrate) navigator.vibrate(30);
-    } else {
-      S.today.tasksDone = Math.max(0, (S.today.tasksDone || 0) - 1);
-    }
-    saveState(); renderTasks(); updateHome();
-  }
+  if (t) { t.done = !t.done; saveState(); renderTasks(); updateHome(); }
 }
 
 function deleteTask(id) {
@@ -2195,7 +1905,7 @@ function renderTasks() {
           <div class="ttext">${esc(t.text)}</div>
           <div class="tmeta">${t.cat.toUpperCase()} · ${age}</div>
         </div>
-        <button class="tdel" onclick="deleteTask(${t.id})" aria-label="Delete task">✕</button>
+        <button class="tdel" onclick="deleteTask(${t.id})">✕</button>
       </div>`;
   }
   list.innerHTML = html;
@@ -2269,8 +1979,7 @@ function timerComplete() {
     : 'Break over. Ready to focus again?';
 
   if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-  sfx.complete();
-  fireNotification(label, S.timerType === 'focus' ? 'Focus session complete — time for a break.' : 'Break over — ready to focus again?');
+  playTone();
   showAlert('✓', label, msg);
   updateTimerDisplay();
   updateHome();
@@ -2332,294 +2041,20 @@ function renderSessionLog() {
   log.innerHTML = html;
 }
 
-// ── SOUND ENGINE (LCARS-style synthesized blips) ──────────────────
-
-let audioCtx = null;
-let soundOn = (S.settings && S.settings.sound !== false);
-let masterVol = (S.settings && typeof S.settings.volume === 'number' ? S.settings.volume : 60) / 100;
-
-function ensureAudio() {
-  if (!audioCtx) {
-    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-    catch (e) { return null; }
-  }
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-  return audioCtx;
-}
-
-// Unlock audio on the first user gesture (browsers block autoplay).
-function unlockAudio() {
-  ensureAudio();
-  window.removeEventListener('pointerdown', unlockAudio);
-  window.removeEventListener('keydown', unlockAudio);
-}
-window.addEventListener('pointerdown', unlockAudio);
-window.addEventListener('keydown', unlockAudio);
-
-// Play a single tone. opts: {freq, dur, type, vol, delay, glideTo}
-function tone({ freq = 440, dur = 0.12, type = 'sine', vol = 0.18, delay = 0, glideTo = null }) {
-  const ctx = ensureAudio();
-  if (!ctx) return;
-  const t0 = ctx.currentTime + delay;
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  osc.type = type;
-  osc.frequency.setValueAtTime(freq, t0);
-  if (glideTo) osc.frequency.exponentialRampToValueAtTime(glideTo, t0 + dur);
-  osc.connect(gain); gain.connect(ctx.destination);
-  const peak = Math.max(0.0002, vol * masterVol);
-  gain.gain.setValueAtTime(0.0001, t0);
-  gain.gain.exponentialRampToValueAtTime(peak, t0 + 0.012);
-  gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
-  osc.start(t0);
-  osc.stop(t0 + dur + 0.02);
-}
-
-const sfx = {
-  tap()     { if (soundOn) tone({ freq: 660, dur: 0.07, type: 'square', vol: 0.10 }); },
-  nav()     { if (!soundOn) return; tone({ freq: 720, dur: 0.06, type: 'square', vol: 0.12 }); tone({ freq: 540, dur: 0.09, type: 'square', vol: 0.10, delay: 0.05 }); },
-  select()  { if (soundOn) tone({ freq: 880, dur: 0.08, type: 'triangle', vol: 0.13 }); },
-  confirm() { if (!soundOn) return; tone({ freq: 600, dur: 0.08, type: 'sine', vol: 0.15 }); tone({ freq: 900, dur: 0.12, type: 'sine', vol: 0.15, delay: 0.08 }); },
-  error()   { if (!soundOn) return; tone({ freq: 320, dur: 0.16, type: 'sawtooth', vol: 0.14, glideTo: 180 }); tone({ freq: 300, dur: 0.16, type: 'sawtooth', vol: 0.12, delay: 0.14 }); },
-  alert()   { if (!soundOn) return; tone({ freq: 740, dur: 0.1, type: 'triangle', vol: 0.16 }); tone({ freq: 988, dur: 0.14, type: 'triangle', vol: 0.16, delay: 0.1 }); },
-  breathe(up) { if (soundOn) tone({ freq: up ? 330 : 440, dur: 0.5, type: 'sine', vol: 0.08, glideTo: up ? 440 : 300 }); },
-  complete() {
-    if (!soundOn) return;
-    [523, 659, 784, 1047].forEach((f, i) =>
-      tone({ freq: f, dur: 0.35, type: 'triangle', vol: 0.16, delay: i * 0.13 }));
-  },
-  boot() {
-    if (!soundOn) return;
-    tone({ freq: 180, dur: 0.7, type: 'sawtooth', vol: 0.10, glideTo: 520 });
-    [392, 523, 659, 880].forEach((f, i) =>
-      tone({ freq: f, dur: 0.5, type: 'triangle', vol: 0.13, delay: 0.5 + i * 0.09 }));
-  },
-};
-
-// Backwards-compatible alias
-function playTone() { sfx.complete(); }
-
-function toggleSound() {
-  soundOn = !soundOn;
-  if (!S.settings) S.settings = {};
-  S.settings.sound = soundOn;
-  saveState();
-  updateSoundToggle();
-  if (soundOn) sfx.confirm();
-}
-
-function updateSoundToggle() {
-  const btn = document.getElementById('sound-toggle');
-  if (!btn) return;
-  btn.textContent = soundOn ? '♪ SND' : '♪ OFF';
-  btn.classList.toggle('off', !soundOn);
-}
-
-// ── SETTINGS ──────────────────────────────────────────────────────
-
-function openSettings() {
-  const g = S.settings;
-  document.getElementById('set-sound').checked = g.sound !== false;
-  document.getElementById('set-volume').value = g.volume;
-  document.getElementById('set-boot').checked = g.bootOnLaunch !== false;
-  document.getElementById('set-notify').checked = g.notify === true && notifyGranted();
-  document.getElementById('set-focus').value = g.defaultFocus || 25;
-  document.getElementById('settings-overlay').classList.add('on');
-}
-
-function closeSettings() {
-  document.getElementById('settings-overlay').classList.remove('on');
-}
-
-function setSetting(key, val) {
-  S.settings[key] = val;
-  if (key === 'sound') { soundOn = val; updateSoundToggle(); }
-  saveState();
-  if (key === 'sound' && val) sfx.confirm();
-}
-
-function setVolume(val) {
-  masterVol = Math.max(0, Math.min(100, parseInt(val) || 0)) / 100;
-  S.settings.volume = parseInt(val) || 0;
-  saveState();
-  sfx.tap();
-}
-
-function setDefaultFocus(val) {
-  let v = parseInt(val);
-  if (!v || v < 1) v = 25;
-  if (v > 180) v = 180;
-  S.settings.defaultFocus = v;
-  document.getElementById('set-focus').value = v;
-  // Apply right away if a focus timer is idle.
-  if (!timerRunning && S.timerType === 'focus') {
-    S.timerTotal = v * 60;
-    timerRemaining = S.timerTotal;
-    updateTimerDisplay();
-  }
-  saveState();
-}
-
-// ── NOTIFICATIONS ─────────────────────────────────────────────────
-
-function notifyGranted() {
-  return ('Notification' in window) && Notification.permission === 'granted';
-}
-
-function toggleNotifications(on) {
-  if (!on) { S.settings.notify = false; saveState(); return; }
-  if (!('Notification' in window)) {
-    document.getElementById('set-notify').checked = false;
-    return showAlert('⚠', 'UNSUPPORTED', 'This device does not support notifications.');
-  }
-  if (Notification.permission === 'granted') {
-    S.settings.notify = true; saveState();
-  } else if (Notification.permission === 'denied') {
-    document.getElementById('set-notify').checked = false;
-    showAlert('⚠', 'BLOCKED', 'Notifications are blocked in your browser settings. Enable them for this site, then try again.');
-  } else {
-    Notification.requestPermission().then(perm => {
-      const granted = perm === 'granted';
-      S.settings.notify = granted; saveState();
-      document.getElementById('set-notify').checked = granted;
-    });
-  }
-}
-
-function fireNotification(title, body) {
-  if (S.settings.notify !== true || !notifyGranted()) return;
-  if (document.visibilityState === 'visible') return; // alert overlay already covers this
-  try { new Notification(title, { body, icon: 'icon.svg', tag: 'lcars-timer' }); } catch (e) {}
-}
-
-// ── DATA EXPORT / IMPORT ──────────────────────────────────────────
-
-function exportData() {
+function playTone() {
   try {
-    const blob = new Blob([JSON.stringify(S, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'lcars-adhd-backup-' + new Date().toISOString().slice(0, 10) + '.json';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-    sfx.confirm();
-  } catch (e) {
-    showAlert('⚠', 'EXPORT FAILED', 'Could not generate the backup file.');
-  }
-}
-
-function importData(event) {
-  const file = event.target.files && event.target.files[0];
-  event.target.value = ''; // allow re-importing the same file later
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      const data = JSON.parse(reader.result);
-      if (typeof data !== 'object' || data === null || Array.isArray(data)) throw new Error('bad');
-      showAlert('⭱', 'IMPORT DATA?', 'This will replace all current data on this device with the contents of the backup file. This cannot be undone.', () => {
-        localStorage.setItem('lcars-adhd', JSON.stringify(data));
-        location.reload();
-      });
-    } catch (e) {
-      showAlert('⚠', 'INVALID FILE', 'That file is not a valid LCARS backup.');
-    }
-  };
-  reader.readAsText(file);
-}
-
-function resetAllData() {
-  showAlert('⚠', 'RESET ALL DATA?', 'This permanently erases all tasks, notes, logs, routines, and settings on this device. This cannot be undone.', () => {
-    localStorage.removeItem('lcars-adhd');
-    location.reload();
-  });
-}
-
-// Global UI click feedback — routed by element type.
-document.addEventListener('pointerdown', e => {
-  if (!soundOn) return;
-  const el = e.target.closest('button, .tchk, .rstep, .strat-card');
-  if (!el || el.id === 'sound-toggle') return;
-  if (el.classList.contains('nav-btn')) sfx.nav();
-  else if (el.matches('.mood-btn, .eseg, .preset-btn, .rtab, .cat-pill')) sfx.select();
-  else if (el.matches('.btn-o, .btn-g, .btn-b, .btn-m')) sfx.confirm();
-  else sfx.tap();
-}, true);
-
-// ── BOOT SEQUENCE ─────────────────────────────────────────────────
-
-const BOOT_LINES = [
-  ['CORE MEMORY', 'ONLINE'],
-  ['NEURAL BUFFER', 'MOUNTED'],
-  ['SENSORY ARRAY', 'CALIBRATED'],
-  ['TEMPORAL REGULATOR', 'SYNCED'],
-  ['DAILY PROTOCOLS', 'LOADED'],
-  ['LCARS INTERFACE', 'READY'],
-];
-
-let bootDone = false;
-
-function finishBoot() {
-  if (bootDone) return;
-  bootDone = true;
-  const boot = document.getElementById('boot');
-  if (boot) {
-    boot.classList.add('done');
-    setTimeout(() => { boot.style.display = 'none'; }, 550);
-  }
-}
-
-function runBoot() {
-  const boot = document.getElementById('boot');
-  if (!boot) return;
-
-  // Honor the "boot on launch" preference.
-  if (S.settings && S.settings.bootOnLaunch === false) {
-    boot.style.display = 'none';
-    bootDone = true;
-    return;
-  }
-
-  boot.addEventListener('click', () => { sfx.boot(); finishBoot(); });
-
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const console_ = document.getElementById('boot-console');
-  const fill = document.getElementById('boot-progress-fill');
-
-  if (reduced) {
-    BOOT_LINES.forEach(([a, b]) => {
-      const d = document.createElement('div');
-      d.className = 'bl';
-      d.innerHTML = `<span>${a}</span><span class="bok">${b}</span>`;
-      console_.appendChild(d);
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [440, 550, 660].forEach((f, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.frequency.value = f;
+      gain.gain.setValueAtTime(0.3, ctx.currentTime + i * 0.15);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.15 + 0.4);
+      osc.start(ctx.currentTime + i * 0.15);
+      osc.stop(ctx.currentTime + i * 0.15 + 0.4);
     });
-    if (fill) fill.style.width = '100%';
-    setTimeout(finishBoot, 900);
-    return;
-  }
-
-  let i = 0;
-  const total = BOOT_LINES.length;
-  const step = () => {
-    if (bootDone) return;
-    if (i < total) {
-      const [a, b] = BOOT_LINES[i];
-      const d = document.createElement('div');
-      d.className = 'bl';
-      d.innerHTML = `<span>${a}</span><span class="bok">${b}</span>`;
-      console_.appendChild(d);
-      sfx.tap();
-      i++;
-      if (fill) fill.style.width = Math.round((i / total) * 100) + '%';
-      setTimeout(step, 320);
-    } else {
-      setTimeout(() => { sfx.boot(); finishBoot(); }, 450);
-    }
-  };
-  setTimeout(step, 700);
+  } catch (e) {}
 }
 
 // ── ROUTINES ──────────────────────────────────────────────────────
@@ -2680,11 +2115,7 @@ function renderRoutine() {
 function toggleStep(id) {
   const steps = S.routineState[currentRoutine];
   const step = steps.find(s => s.id === id);
-  if (step) {
-    step.done = !step.done;
-    if (step.done && navigator.vibrate) navigator.vibrate(30);
-    saveState(); renderRoutine(); updateHome();
-  }
+  if (step) { step.done = !step.done; saveState(); renderRoutine(); updateHome(); }
 }
 
 function resetRoutine() {
@@ -2862,8 +2293,6 @@ function startBreathing(type) {
     const p = seq[i % seq.length];
     circle.className = 'breath-circle ' + p.cls;
     circle.textContent = p.phase;
-    if (p.phase === 'INHALE') sfx.breathe(true);
-    else if (p.phase === 'EXHALE') sfx.breathe(false);
     label.textContent = (p.dur / 1000) + 's · CYCLE ' + (Math.floor(i / seq.length) + 1);
     breathInterval = setTimeout(step, p.dur);
     i++;
@@ -2925,10 +2354,202 @@ function renderNotes() {
       <div class="note-text">${esc(n.text)}</div>
       <div class="note-foot">
         <span class="note-time">${timeStr}</span>
-        <button class="note-del" onclick="deleteNote(${n.id})" aria-label="Delete note">✕</button>
+        <button class="note-del" onclick="deleteNote(${n.id})">✕</button>
       </div>
     </div>`;
   }).join('');
+}
+
+// ── DAILY ESSENTIALS (HYDRATION + MEDS) ───────────────────────────
+
+function changeWater(delta) {
+  S.today.water = Math.max(0, (S.today.water || 0) + delta);
+  saveState();
+  renderEssentials();
+  updateHome();
+}
+
+function toggleMed(name) {
+  if (!S.today.meds) S.today.meds = {};
+  S.today.meds[name] = !S.today.meds[name];
+  saveState();
+  renderEssentials();
+}
+
+function addMed() {
+  const inp = document.getElementById('med-input');
+  const v = inp.value.trim();
+  if (!v) return;
+  if (!S.medsList) S.medsList = [];
+  if (!S.medsList.includes(v)) S.medsList.push(v);
+  saveState();
+  inp.value = '';
+  renderEssentials();
+}
+
+function removeMed(name) {
+  S.medsList = (S.medsList || []).filter(m => m !== name);
+  if (S.today.meds) delete S.today.meds[name];
+  saveState();
+  renderEssentials();
+}
+
+function renderEssentials() {
+  const goal = S.waterGoal || 8;
+  const water = S.today.water || 0;
+
+  const wc = document.getElementById('water-count');
+  if (wc) wc.textContent = water + ' / ' + goal;
+
+  const dots = document.getElementById('water-dots');
+  if (dots) {
+    const n = Math.max(goal, water);
+    let html = '';
+    for (let i = 0; i < n; i++) html += '<div class="wdot' + (i < water ? ' full' : '') + '"></div>';
+    dots.innerHTML = html;
+  }
+
+  const ml = document.getElementById('med-list');
+  if (ml) {
+    const list = S.medsList || [];
+    if (!list.length) {
+      ml.innerHTML = '<div class="text-dim" style="padding:4px 0">No meds added yet — add one below.</div>';
+    } else {
+      ml.innerHTML = list.map(name => {
+        const taken = S.today.meds && S.today.meds[name];
+        const a = escAttr(name);
+        return `<div class="med-row ${taken ? 'taken' : ''}">
+          <div class="med-chk" onclick="toggleMed('${a}')">${taken ? '✓' : ''}</div>
+          <div class="med-name">${esc(name)}</div>
+          <button class="tdel" onclick="removeMed('${a}')">✕</button>
+        </div>`;
+      }).join('');
+    }
+  }
+}
+
+// ── WINS & DOPAMINE ───────────────────────────────────────────────
+
+function logWin() {
+  const inp = document.getElementById('win-input');
+  const text = (inp && inp.value.trim()) || 'Win logged!';
+  if (!S.wins) S.wins = [];
+  S.wins.unshift({ id: Date.now(), text, ts: new Date().toISOString() });
+  if (S.wins.length > 200) S.wins.pop();
+  saveState();
+  if (inp) inp.value = '';
+  if (navigator.vibrate) navigator.vibrate([40, 30, 40]);
+  showBrief('🎉 Win logged!');
+  renderWins();
+  updateHome();
+}
+
+function deleteWin(id) {
+  S.wins = (S.wins || []).filter(w => w.id !== id);
+  saveState();
+  renderWins();
+  updateHome();
+}
+
+function renderWins() {
+  const list = document.getElementById('win-list');
+  if (!list) return;
+  const wins = (S.wins || []).slice(0, 6);
+  if (!wins.length) {
+    list.innerHTML = '<div class="text-dim" style="padding:4px 0">No wins yet — log one to build momentum.</div>';
+    return;
+  }
+  list.innerHTML = wins.map(w => {
+    const t = new Date(w.ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return `<div class="win-item">
+      <span class="win-star">★</span>
+      <span class="win-text">${esc(w.text)}</span>
+      <span class="win-time">${t}</span>
+      <button class="tdel" onclick="deleteWin(${w.id})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+// ── SOS QUICK-CALM ────────────────────────────────────────────────
+
+function sos() {
+  if (navigator.vibrate) navigator.vibrate(30);
+  goPanel('regulate');
+  showBreathCard();
+  startBreathing('box');
+}
+
+// ── SETTINGS & DATA ───────────────────────────────────────────────
+
+function applySettings() {
+  const s = S.settings || {};
+  document.body.classList.toggle('reduce-motion', !!s.reduceMotion);
+  document.body.classList.toggle('large-text', !!s.largeText);
+}
+
+function toggleSetting(key) {
+  if (!S.settings) S.settings = {};
+  S.settings[key] = !S.settings[key];
+  saveState();
+  applySettings();
+  renderSettings();
+}
+
+function renderSettings() {
+  const s = S.settings || {};
+  ['reduceMotion', 'largeText'].forEach(k => {
+    const el = document.getElementById('tg-' + k);
+    if (el) el.classList.toggle('on', !!s[k]);
+  });
+}
+
+function exportData() {
+  try {
+    const blob = new Blob([JSON.stringify(S, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'lcars-adhd-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    showBrief('Backup downloaded');
+  } catch (e) {
+    showAlert('⚠', 'EXPORT FAILED', 'Could not generate the backup file.');
+  }
+}
+
+function importData(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (typeof data !== 'object' || data === null) throw new Error('bad');
+      S = Object.assign({}, DEFAULTS, data, {
+        today: Object.assign({}, DEFAULTS.today, data.today || {}),
+        settings: Object.assign({}, DEFAULTS.settings, data.settings || {}),
+        routineState: Object.assign({
+          morning: [], evening: [], custom: [], lastReset: null,
+        }, data.routineState || {}),
+      });
+      saveState();
+      showAlert('✓', 'IMPORT COMPLETE', 'Your data has been restored. Reloading…', () => location.reload());
+    } catch (err) {
+      showAlert('⚠', 'IMPORT FAILED', 'That file could not be read as a valid LCARS backup.');
+    }
+  };
+  reader.readAsText(file);
+  input.value = '';
+}
+
+function resetAllData() {
+  showAlert('⚠', 'ERASE ALL DATA?', 'This permanently deletes everything on this device. Export a backup first if unsure.', () => {
+    localStorage.removeItem('lcars-adhd');
+    location.reload();
+  });
 }
 
 // ── ALERT OVERLAY ────────────────────────────────────────────────
@@ -2940,13 +2561,19 @@ function showAlert(icon, title, msg, callback) {
   document.getElementById('ov-title').textContent = title || '';
   document.getElementById('ov-msg').textContent = msg || '';
   alertCallback = callback || null;
+  const cancel = document.getElementById('ov-cancel');
+  const confirm = document.getElementById('ov-confirm');
+  // Confirm mode (with callback) shows a Cancel button so it can be backed out of
+  if (callback) { cancel.style.display = ''; confirm.textContent = 'CONFIRM'; }
+  else { cancel.style.display = 'none'; confirm.textContent = 'ACKNOWLEDGE'; }
   document.getElementById('overlay').classList.add('on');
-  sfx.alert();
 }
 
-function hideAlert() {
+function hideAlert(run) {
   document.getElementById('overlay').classList.remove('on');
-  if (alertCallback) { const cb = alertCallback; alertCallback = null; cb(); }
+  const cb = alertCallback;
+  alertCallback = null;
+  if (run && cb) cb();
 }
 
 // Brief non-blocking toast (just updates status chip briefly)
@@ -2970,6 +2597,14 @@ function esc(s) {
     .replace(/\n/g, '<br>');
 }
 
+// Escape a string for safe use inside a single-quoted inline JS handler
+function escAttr(s) {
+  return String(s)
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/"/g, '&quot;');
+}
+
 function timeSince(isoStr) {
   if (!isoStr) return '';
   const ms = Date.now() - new Date(isoStr).getTime();
@@ -2984,11 +2619,6 @@ function timeSince(isoStr) {
 // ── KEYBOARD SHORTCUTS ────────────────────────────────────────────
 
 document.addEventListener('keydown', e => {
-  // Escape closes any open overlay first.
-  if (e.key === 'Escape') {
-    if (document.getElementById('settings-overlay').classList.contains('on')) return closeSettings();
-    if (document.getElementById('overlay').classList.contains('on')) return hideAlert();
-  }
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
   const map = { h: 'home', t: 'tasks', p: 'timer', r: 'routine', s: 'sensory', g: 'regulate', n: 'notes' };
   if (map[e.key]) goPanel(map[e.key]);
@@ -3005,11 +2635,12 @@ document.addEventListener('keydown', e => {
 // ── INIT ──────────────────────────────────────────────────────────
 
 function init() {
-  runBoot();
-  updateSoundToggle();
   initRoutines();
+  applySettings();
   liveSensory = { ...S.today.sensory };
   updateHome();
+  renderEssentials();
+  renderWins();
   updateClock();
   setInterval(updateClock, 30000);
 
