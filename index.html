@@ -1010,6 +1010,17 @@
   }
   #sos-btn:active { transform: scale(0.92); }
 
+  /* ── COLOR THEMES ────────────────────────────────── */
+  /* Remap the dominant accent vars; semantic colors (red/green/yellow) stay. */
+  body.theme-blue   { --orange: #6699FF; --peach: #99CCFF; --tan: #5588DD; --dim: #1a3366; }
+  body.theme-green  { --orange: #66CC88; --peach: #99DDAA; --tan: #44AA77; --dim: #143322; }
+  body.theme-mauve  { --orange: #CC99CC; --peach: #E0B3E0; --tan: #AA77AA; --dim: #3a2240; }
+  body.theme-amber  { --orange: #FFB000; --peach: #FFD27F; --tan: #DD8800; --dim: #4a3000; }
+
+  .theme-grid { display: flex; gap: 10px; }
+  .theme-swatch { width: 40px; height: 40px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; }
+  .theme-swatch.sel { border-color: #fff; box-shadow: 0 0 8px rgba(255,255,255,0.6); }
+
   /* ── ACCESSIBILITY MODES ─────────────────────────── */
   body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after { animation: none !important; transition: none !important; }
   body.large-text .ttext, body.large-text .note-text, body.large-text .rstep-text,
@@ -1061,6 +1072,17 @@
     min-height: 48px;
   }
   .dispatch .src { display: block; font-style: normal; margin-top: 6px; font-size: 11px; color: var(--mauve); letter-spacing: 0.05em; }
+
+  /* Service Record */
+  .sr-top { display: flex; align-items: center; gap: 12px; }
+  .sr-pips { display: flex; gap: 4px; flex-shrink: 0; padding: 6px 8px; background: #000; border: 1px solid #2a1800; border-radius: 6px; }
+  .sr-pip, .pip { width: 9px; height: 9px; border-radius: 50%; display: inline-block; box-shadow: 0 0 5px currentColor; }
+  .sr-title { font-size: 19px; font-weight: 700; color: var(--orange); letter-spacing: 0.04em; }
+  .sr-pts { font-size: 11px; color: var(--blue); letter-spacing: 0.06em; }
+  .sr-prog { height: 10px; background: #1a1208; border-radius: 5px; overflow: hidden; margin-top: 12px; }
+  .sr-prog-fill { height: 100%; background: linear-gradient(90deg, var(--orange), var(--yellow)); border-radius: 5px; transition: width 0.4s ease; }
+  .sr-next { font-size: 11px; color: var(--pale); margin-top: 6px; }
+  .sr-stats { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 10px; font-size: 12px; color: var(--blue); }
 
   .pad-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
   .pad {
@@ -1472,6 +1494,7 @@
           <textarea id="note-input" class="inp" placeholder="Dump thoughts here... tap add when done" rows="4"></textarea>
           <div class="row mt8">
             <button class="btn btn-o" onclick="addNote()" style="flex:1">CAPTURE THOUGHT</button>
+            <button class="btn btn-b btn-sm" onclick="captainsLog()" title="Start a Captain's Log entry">🖖 LOG</button>
             <button class="btn btn-ghost btn-sm" onclick="clearAllNotes()" title="Clear all notes">🗑</button>
           </div>
         </div>
@@ -1488,6 +1511,11 @@
         <div class="sec-head">
           <span class="sec-title">HOLODECK</span>
           <span class="sec-sub">REC &amp; RESET</span>
+        </div>
+
+        <div class="card">
+          <div class="card-head">SERVICE RECORD</div>
+          <div id="service-record"></div>
         </div>
 
         <div class="card">
@@ -1533,6 +1561,18 @@
           <div class="set-row">
             <div><div class="set-label">Large Text</div><div class="set-desc">Bigger, easier-to-read text</div></div>
             <button class="toggle" id="tg-largeText" onclick="toggleSetting('largeText')"></button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">LCARS THEME</div>
+          <div class="set-desc mb8">Recolor the interface. Alert colors stay the same.</div>
+          <div class="theme-grid" id="theme-grid">
+            <button class="theme-swatch" data-theme="classic" onclick="setTheme('classic')" style="background:#FF9900" title="Classic Amber"></button>
+            <button class="theme-swatch" data-theme="amber"   onclick="setTheme('amber')"   style="background:#FFB000" title="Deep Amber"></button>
+            <button class="theme-swatch" data-theme="blue"    onclick="setTheme('blue')"    style="background:#6699FF" title="Okudagram Blue"></button>
+            <button class="theme-swatch" data-theme="green"   onclick="setTheme('green')"   style="background:#66CC88" title="Medical Green"></button>
+            <button class="theme-swatch" data-theme="mauve"   onclick="setTheme('mauve')"   style="background:#CC99CC" title="Nebula Mauve"></button>
           </div>
         </div>
 
@@ -1629,8 +1669,9 @@ const DEFAULTS = {
   wins: [],
   medsList: [],
   games: { drillBest: 0, reflexBest: 0 },
+  career: { focus: 0, tasks: 0, routines: 0, wins: 0, rankIndex: 0 },
   waterGoal: 8,
-  settings: { reduceMotion: false, largeText: false, sound: true, haptics: true, volume: 60, bootOnLaunch: true },
+  settings: { reduceMotion: false, largeText: false, sound: true, haptics: true, volume: 60, bootOnLaunch: true, theme: 'classic' },
   routineState: {
     morning: [],
     evening: [],
@@ -1825,6 +1866,7 @@ function loadState() {
       today: Object.assign({}, DEFAULTS.today, s.today || {}),
       settings: Object.assign({}, DEFAULTS.settings, s.settings || {}),
       games: Object.assign({}, DEFAULTS.games, s.games || {}),
+      career: Object.assign({}, DEFAULTS.career, s.career || {}),
       routineState: Object.assign({
         morning: [], evening: [], custom: [], lastReset: null,
       }, s.routineState || {}),
@@ -1906,7 +1948,13 @@ function checkDailyReset(now) {
     }
     S.routineState.lastReset = today;
     saveState();
+    // Refresh every day-scoped view so the new day shows clean state,
+    // even if the reset fires while the app is already open.
     updateHome();
+    renderEssentials();
+    renderRoutine();
+    renderTasks();
+    renderSessionLog();
   }
 }
 
@@ -1954,6 +2002,13 @@ function updateHome() {
     for (let i = 1; i <= 5; i++) {
       const seg = document.querySelector(`.eseg[data-e="${i}"]`);
       if (seg) seg.className = 'eseg' + (i <= S.today.energy ? ' on-' + i : '');
+    }
+  } else {
+    document.getElementById('energy-label').textContent = 'TAP TO SET ENERGY';
+    document.getElementById('energy-chip').textContent = 'ENERGY —';
+    for (let i = 1; i <= 5; i++) {
+      const seg = document.querySelector(`.eseg[data-e="${i}"]`);
+      if (seg) seg.className = 'eseg';
     }
   }
 
@@ -2026,7 +2081,7 @@ function toggleTask(id) {
   const t = S.tasks.find(t => t.id === id);
   if (t) {
     t.done = !t.done;
-    if (t.done) haptic(30);
+    if (t.done) { haptic(30); awardCareer('tasks'); }
     saveState(); renderTasks(); updateHome();
   }
 }
@@ -2160,6 +2215,10 @@ function timerComplete() {
   document.getElementById('timer-session-count').textContent =
     'SESSIONS TODAY: ' + S.timerSessions.filter(s => s.type === 'focus').length;
   renderSessionLog();
+
+  // Credit the service record (a promotion alert will supersede the
+  // completion alert above, which is the more exciting outcome).
+  if (S.timerType === 'focus') awardCareer('focus');
 }
 
 function timerReset() {
@@ -2427,7 +2486,15 @@ function toggleStep(id) {
   const step = steps.find(s => s.id === id);
   if (step) {
     step.done = !step.done;
-    if (step.done) haptic(30);
+    if (step.done) {
+      haptic(30);
+      // If that was the final step, the whole routine just completed.
+      if (steps.length && steps.every(s => s.done)) {
+        sfx.win();
+        confetti(60);
+        awardCareer('routines');
+      }
+    }
     saveState(); renderRoutine(); updateHome();
   }
 }
@@ -2438,10 +2505,12 @@ function resetRoutine() {
 }
 
 function completeAllRoutine() {
+  const wasComplete = getRoutineSteps().every(s => s.done) && getRoutineSteps().length > 0;
   S.routineState[currentRoutine] = getRoutineSteps().map(s => ({ ...s, done: true }));
   haptic([40, 30, 40]);
   sfx.win();
   confetti(60);
+  if (!wasComplete && S.routineState[currentRoutine].length) awardCareer('routines');
   saveState(); renderRoutine(); updateHome();
 }
 
@@ -2632,6 +2701,23 @@ function stopBreathing() {
 
 // ── NOTES ────────────────────────────────────────────────────────
 
+function stardateStr(now) {
+  now = now || new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const day = Math.floor((now - start) / 86400000);
+  return now.getFullYear() + '.' + String(day).padStart(3, '0');
+}
+
+function captainsLog() {
+  const inp = document.getElementById('note-input');
+  if (!inp) return;
+  const prefix = 'Captain\'s Log, Stardate ' + stardateStr() + ': ';
+  inp.value = prefix + inp.value.replace(/^Captain's Log, Stardate [0-9.]+: /, '');
+  inp.focus();
+  inp.setSelectionRange(inp.value.length, inp.value.length);
+  sfx.select();
+}
+
 function addNote() {
   const inp = document.getElementById('note-input');
   const text = inp.value.trim();
@@ -2768,6 +2854,7 @@ function logWin() {
   sfx.win();
   confetti(40);
   showBrief('🎉 Win logged!');
+  awardCareer('wins');
   renderWins();
   updateHome();
 }
@@ -2809,10 +2896,24 @@ function sos() {
 
 // ── SETTINGS & DATA ───────────────────────────────────────────────
 
+const THEMES = ['classic', 'amber', 'blue', 'green', 'mauve'];
+
 function applySettings() {
   const s = S.settings || {};
   document.body.classList.toggle('reduce-motion', !!s.reduceMotion);
   document.body.classList.toggle('large-text', !!s.largeText);
+  THEMES.forEach(t => document.body.classList.remove('theme-' + t));
+  const theme = s.theme && THEMES.includes(s.theme) ? s.theme : 'classic';
+  if (theme !== 'classic') document.body.classList.add('theme-' + theme);
+}
+
+function setTheme(name) {
+  if (!S.settings) S.settings = {};
+  S.settings.theme = THEMES.includes(name) ? name : 'classic';
+  saveState();
+  applySettings();
+  renderSettings();
+  sfx.select();
 }
 
 function toggleSetting(key) {
@@ -2845,6 +2946,9 @@ function renderSettings() {
   });
   const vol = document.getElementById('set-volume');
   if (vol) vol.value = (typeof s.volume === 'number' ? s.volume : 60);
+  const theme = s.theme || 'classic';
+  document.querySelectorAll('.theme-swatch').forEach(sw =>
+    sw.classList.toggle('sel', sw.dataset.theme === theme));
 }
 
 function exportData() {
@@ -2876,6 +2980,7 @@ function importData(input) {
         today: Object.assign({}, DEFAULTS.today, data.today || {}),
         settings: Object.assign({}, DEFAULTS.settings, data.settings || {}),
         games: Object.assign({}, DEFAULTS.games, data.games || {}),
+        career: Object.assign({}, DEFAULTS.career, data.career || {}),
         routineState: Object.assign({
           morning: [], evening: [], custom: [], lastReset: null,
         }, data.routineState || {}),
@@ -3014,6 +3119,100 @@ function renderHolodeck() {
   document.getElementById('drill-best').textContent = S.games.drillBest || 0;
   document.getElementById('reflex-best').textContent =
     S.games.reflexBest ? S.games.reflexBest + ' ms' : '—';
+  renderServiceRecord();
+}
+
+// ── STARFLEET SERVICE RECORD (rank progression) ───────────────────
+
+// Each rank: [meritThreshold, title, pip-count, pip-color].
+const RANKS = [
+  [0,    'Cadet',           1, '#CC2200'],
+  [12,   'Crewman',         1, '#FF9900'],
+  [30,   'Ensign',          1, '#FFCC00'],
+  [55,   'Lieutenant J.G.', 2, '#FFCC00'],
+  [95,   'Lieutenant',      2, '#FFCC99'],
+  [150,  'Lt. Commander',   3, '#FFCC99'],
+  [220,  'Commander',       3, '#FFFFFF'],
+  [320,  'Captain',         4, '#FFD700'],
+  [460,  'Fleet Captain',   4, '#99CCFF'],
+  [650,  'Commodore',       1, '#CC99CC'],
+  [900,  'Admiral',         5, '#FFD700'],
+];
+
+function meritPoints() {
+  const c = S.career || {};
+  return (c.focus || 0) * 3 + (c.tasks || 0) * 1 + (c.routines || 0) * 5 + (c.wins || 0) * 2;
+}
+
+function rankForPoints(pts) {
+  let idx = 0;
+  for (let i = 0; i < RANKS.length; i++) if (pts >= RANKS[i][0]) idx = i;
+  return idx;
+}
+
+// Increment a career counter and check for a promotion.
+function awardCareer(type, n) {
+  if (!S.career) S.career = { focus: 0, tasks: 0, routines: 0, wins: 0, rankIndex: 0 };
+  S.career[type] = (S.career[type] || 0) + (n || 1);
+  const newIdx = rankForPoints(meritPoints());
+  if (newIdx > (S.career.rankIndex || 0)) {
+    S.career.rankIndex = newIdx;
+    saveState();
+    promote(newIdx);
+  } else {
+    saveState();
+  }
+}
+
+function promote(idx) {
+  const title = RANKS[idx][1];
+  confetti(90);
+  if (soundOn) sfx.win();
+  haptic([60, 40, 60, 40, 120]);
+  showAlert('🎖', 'FIELD PROMOTION', 'By order of Starfleet Command, you are promoted to:\n\n' + title.toUpperCase() + '\n\nWell done. Your consistency is logged in the ship\'s record.');
+  if (currentPanel === 'holodeck') renderServiceRecord();
+  updateHome();
+}
+
+function pipsHTML(count, color) {
+  let s = '';
+  for (let i = 0; i < count; i++) s += `<span class="pip" style="background:${color}"></span>`;
+  return s;
+}
+
+function renderServiceRecord() {
+  const el = document.getElementById('service-record');
+  if (!el) return;
+  const pts = meritPoints();
+  const idx = rankForPoints(pts);
+  const [thr, title, pipN, pipC] = RANKS[idx];
+  const next = RANKS[idx + 1];
+  const c = S.career || {};
+  let progress = '';
+  if (next) {
+    const span = next[0] - thr;
+    const into = pts - thr;
+    const pct = Math.max(0, Math.min(100, Math.round(into / span * 100)));
+    progress = `<div class="sr-prog"><div class="sr-prog-fill" style="width:${pct}%"></div></div>
+      <div class="sr-next">${next[0] - pts} merit to ${esc(next[1])}</div>`;
+  } else {
+    progress = `<div class="sr-next">Maximum rank achieved. The fleet salutes you. 🖖</div>`;
+  }
+  el.innerHTML = `
+    <div class="sr-top">
+      <div class="sr-pips">${pipsHTML(pipN, pipC)}</div>
+      <div class="sr-rank">
+        <div class="sr-title">${esc(title)}</div>
+        <div class="sr-pts">${pts} MERIT POINTS</div>
+      </div>
+    </div>
+    ${progress}
+    <div class="sr-stats">
+      <span>⏱ ${c.focus || 0} focus</span>
+      <span>✓ ${c.tasks || 0} tasks</span>
+      <span>☰ ${c.routines || 0} routines</span>
+      <span>★ ${c.wins || 0} wins</span>
+    </div>`;
 }
 
 // ── Confetti ──────────────────────────────────────────────────────
