@@ -1021,6 +1021,79 @@
   .theme-swatch { width: 40px; height: 40px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; }
   .theme-swatch.sel { border-color: #fff; box-shadow: 0 0 8px rgba(255,255,255,0.6); }
 
+  /* ── VISUAL POP / FX ─────────────────────────────── */
+  /* Glow on the signature LCARS readouts */
+  .sec-title { text-shadow: 0 0 14px rgba(255,153,0,0.55); }
+  #timer-digits { text-shadow: 0 0 22px rgba(255,153,0,0.5); }
+  #stardate, #clock { text-shadow: 0 0 6px rgba(0,0,0,0.25); }
+
+  /* Console-boot: stagger a panel's children in when it opens */
+  .panel.active > * { animation: card-rise 0.34s cubic-bezier(0.2,0.7,0.3,1) both; }
+  .panel.active > *:nth-child(1) { animation-delay: 0.02s; }
+  .panel.active > *:nth-child(2) { animation-delay: 0.06s; }
+  .panel.active > *:nth-child(3) { animation-delay: 0.10s; }
+  .panel.active > *:nth-child(4) { animation-delay: 0.14s; }
+  .panel.active > *:nth-child(5) { animation-delay: 0.18s; }
+  .panel.active > *:nth-child(6) { animation-delay: 0.22s; }
+  .panel.active > *:nth-child(7) { animation-delay: 0.26s; }
+  .panel.active > *:nth-child(8) { animation-delay: 0.30s; }
+  .panel.active > *:nth-child(n+9) { animation-delay: 0.34s; }
+  @keyframes card-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+  /* Cards lift & glow on hover (desktop) */
+  .card { transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s; }
+  @media (hover: hover) {
+    .card:hover { border-color: #4a2c00; box-shadow: 0 0 18px rgba(255,153,0,0.10); }
+  }
+
+  /* Active nav button glows and pushes out */
+  .nav-btn { transition: background 0.15s, box-shadow 0.15s, transform 0.12s; }
+  .nav-btn.active { box-shadow: 0 0 16px rgba(255,204,153,0.5); transform: translateX(2px); }
+  @media (hover: hover) { .nav-btn:hover { transform: translateX(2px); } }
+
+  /* Punchier button press with a glow flash */
+  .btn { transition: opacity 0.1s, transform 0.08s, box-shadow 0.15s, filter 0.15s; }
+  @media (hover: hover) { .btn:hover { filter: brightness(1.08); } }
+  .btn:active { opacity: 0.85; transform: scale(0.94); box-shadow: 0 0 16px currentColor; }
+
+  /* Selected mood glows; a fresh pick gives a one-shot bounce */
+  .mood-btn.sel { box-shadow: 0 0 14px rgba(255,153,0,0.45); }
+  .mood-btn.pop { animation: mood-pop 0.35s ease; }
+  @keyframes mood-pop { 0% { transform: scale(0.9); } 55% { transform: scale(1.14); } 100% { transform: scale(1); } }
+
+  /* Lit energy segments glow */
+  .eseg[class*="on-"] { box-shadow: 0 0 10px currentColor; }
+  .eseg.on-1 { color: var(--red); } .eseg.on-2 { color: #CC5500; }
+  .eseg.on-3 { color: var(--yellow); } .eseg.on-4 { color: var(--green); } .eseg.on-5 { color: var(--blue); }
+
+  /* Focus timer ring breathes while running */
+  #ring-fill { filter: drop-shadow(0 0 6px currentColor); }
+  .timer-ring.running #ring-fill { animation: ring-glow 2s ease-in-out infinite; }
+  @keyframes ring-glow { 0%,100% { filter: drop-shadow(0 0 4px currentColor); } 50% { filter: drop-shadow(0 0 14px currentColor); } }
+  .timer-ring.running #timer-digits { animation: digit-pulse 2s ease-in-out infinite; }
+  @keyframes digit-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.72; } }
+
+  /* Light sweep across the header title bar */
+  #header-title-row { position: relative; overflow: hidden; }
+  #header-title-row::after {
+    content: ''; position: absolute; top: 0; left: -60%; width: 40%; height: 100%;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,0.22), transparent);
+    transform: skewX(-18deg); animation: header-sweep 11s ease-in-out infinite;
+  }
+  @keyframes header-sweep { 0%,82% { left: -60%; } 94%,100% { left: 130%; } }
+
+  /* Optional CRT scanline overlay (Settings → toggle) */
+  body.scanlines::before {
+    content: ''; position: fixed; inset: 0; z-index: 380; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.22) 0px, rgba(0,0,0,0.22) 1px, transparent 2px, transparent 3px);
+    mix-blend-mode: multiply;
+  }
+  body.scanlines::after {
+    content: ''; position: fixed; inset: 0; z-index: 381; pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 62%, rgba(0,0,0,0.35) 100%);
+  }
+  body.reduce-motion #header-title-row::after { animation: none !important; display: none; }
+
   /* ── ACCESSIBILITY MODES ─────────────────────────── */
   body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after { animation: none !important; transition: none !important; }
   body.large-text .ttext, body.large-text .note-text, body.large-text .rstep-text,
@@ -1562,6 +1635,10 @@
             <div><div class="set-label">Large Text</div><div class="set-desc">Bigger, easier-to-read text</div></div>
             <button class="toggle" id="tg-largeText" onclick="toggleSetting('largeText')"></button>
           </div>
+          <div class="set-row">
+            <div><div class="set-label">CRT Scanlines</div><div class="set-desc">Retro starship-console overlay</div></div>
+            <button class="toggle" id="tg-scanlines" onclick="toggleSetting('scanlines')"></button>
+          </div>
         </div>
 
         <div class="card">
@@ -1671,7 +1748,7 @@ const DEFAULTS = {
   games: { drillBest: 0, reflexBest: 0 },
   career: { focus: 0, tasks: 0, routines: 0, wins: 0, rankIndex: 0 },
   waterGoal: 8,
-  settings: { reduceMotion: false, largeText: false, sound: true, haptics: true, volume: 60, bootOnLaunch: true, theme: 'classic' },
+  settings: { reduceMotion: false, largeText: false, scanlines: false, sound: true, haptics: true, volume: 60, bootOnLaunch: true, theme: 'classic' },
   routineState: {
     morning: [],
     evening: [],
@@ -1969,7 +2046,11 @@ function setMood(mood) {
   haptic(15);
   saveState();
   document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('sel'));
-  document.querySelector(`[data-mood="${mood}"]`)?.classList.add('sel');
+  const btn = document.querySelector(`[data-mood="${mood}"]`);
+  if (btn) {
+    btn.classList.add('sel', 'pop');
+    setTimeout(() => btn.classList.remove('pop'), 400);
+  }
   updateHome();
 }
 
@@ -2163,15 +2244,21 @@ function setCustomTimer() {
   document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
 }
 
+function setRingRunning(on) {
+  document.querySelector('.timer-ring')?.classList.toggle('running', on);
+}
+
 function timerStartPause() {
   if (timerRunning) {
     clearInterval(timerInterval);
     timerRunning = false;
+    setRingRunning(false);
     document.getElementById('start-btn').textContent = '▶ RESUME';
     document.getElementById('ring-fill').style.stroke = '#AA6600';
   } else {
     if (timerRemaining <= 0) { timerReset(); return; }
     timerRunning = true;
+    setRingRunning(true);
     document.getElementById('start-btn').textContent = '⏸ PAUSE';
     timerInterval = setInterval(timerTick, 1000);
   }
@@ -2189,6 +2276,7 @@ function timerTick() {
 function timerComplete() {
   clearInterval(timerInterval);
   timerRunning = false;
+  setRingRunning(false);
   document.getElementById('start-btn').textContent = '▶ START';
 
   // log session
@@ -2224,6 +2312,7 @@ function timerComplete() {
 function timerReset() {
   clearInterval(timerInterval);
   timerRunning = false;
+  setRingRunning(false);
   timerRemaining = S.timerTotal;
   document.getElementById('start-btn').textContent = '▶ START';
   document.getElementById('ring-fill').style.stroke = 'var(--orange)';
@@ -2902,6 +2991,7 @@ function applySettings() {
   const s = S.settings || {};
   document.body.classList.toggle('reduce-motion', !!s.reduceMotion);
   document.body.classList.toggle('large-text', !!s.largeText);
+  document.body.classList.toggle('scanlines', !!s.scanlines);
   THEMES.forEach(t => document.body.classList.remove('theme-' + t));
   const theme = s.theme && THEMES.includes(s.theme) ? s.theme : 'classic';
   if (theme !== 'classic') document.body.classList.add('theme-' + theme);
@@ -2940,7 +3030,7 @@ function setVolume(val) {
 
 function renderSettings() {
   const s = S.settings || {};
-  ['reduceMotion', 'largeText', 'sound', 'haptics', 'bootOnLaunch'].forEach(k => {
+  ['reduceMotion', 'largeText', 'scanlines', 'sound', 'haptics', 'bootOnLaunch'].forEach(k => {
     const el = document.getElementById('tg-' + k);
     if (el) el.classList.toggle('on', !!s[k]);
   });
